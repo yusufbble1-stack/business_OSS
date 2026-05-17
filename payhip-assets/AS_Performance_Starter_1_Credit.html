@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AS Performance — Starter Credit Pack Confirmation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0C0C0E; color: #fff; font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px; }
+  .receipt { max-width: 600px; width: 100%; background: linear-gradient(145deg, #161618, #0C0C0E); border: 1px solid rgba(196,30,30,0.2); border-radius: 8px; overflow: hidden; }
+  .receipt-header { padding: 40px 40px 30px; text-align: center; background: linear-gradient(180deg, rgba(196,30,30,0.08), transparent); border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .receipt-logo { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .receipt-sub { font-size: 10px; color: #E63946; text-transform: uppercase; letter-spacing: 3px; font-weight: 600; }
+  .receipt-badge { display: inline-block; margin-top: 20px; padding: 6px 20px; background: rgba(196,30,30,0.12); border: 1px solid rgba(196,30,30,0.25); border-radius: 4px; font-size: 11px; color: #E63946; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+  .receipt-body { padding: 40px; }
+  .receipt-tier { text-align: center; margin-bottom: 32px; }
+  .receipt-tier-name { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; margin-bottom: 8px; }
+  .receipt-credits { font-family: 'Playfair Display', serif; font-size: 64px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .receipt-credits span { font-size: 24px; color: #999; font-family: 'Inter', sans-serif; font-weight: 500; }
+  .receipt-price { font-size: 28px; font-weight: 700; color: #E63946; font-family: 'Playfair Display', serif; }
+  .receipt-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(196,30,30,0.3), transparent); margin: 24px 0; }
+  .receipt-details { display: flex; flex-direction: column; gap: 14px; }
+  .receipt-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+  .receipt-row-label { color: #666; font-weight: 500; }
+  .receipt-row-value { color: #ccc; font-weight: 600; }
+  .receipt-footer { padding: 24px 40px; background: rgba(255,255,255,0.02); border-top: 1px solid rgba(255,255,255,0.04); text-align: center; }
+  .receipt-footer p { font-size: 12px; color: #555; line-height: 1.6; }
+  .receipt-footer a { color: #E63946; text-decoration: none; }
+  .receipt-check { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: rgba(16,185,129,0.1); border: 2px solid rgba(16,185,129,0.3); margin-bottom: 16px; }
+  .receipt-check svg { color: #34D399; }
+  .receipt-instructions { margin-top: 24px; padding: 20px; background: rgba(196,30,30,0.05); border: 1px solid rgba(196,30,30,0.1); border-radius: 6px; }
+  .receipt-instructions h4 { font-size: 13px; color: #E63946; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .receipt-instructions ol { padding-left: 20px; font-size: 13px; color: #999; line-height: 2; }
+  .receipt-instructions li { color: #bbb; }
+</style>
+</head>
+<body>
+  <div class="receipt">
+    <div class="receipt-header">
+      <div class="receipt-logo">AS Performance</div>
+      <div class="receipt-sub">Chiptuning</div>
+      <div class="receipt-badge">✓ Purchase Confirmed</div>
+    </div>
+    <div class="receipt-body">
+      <div style="text-align:center;">
+        <div class="receipt-check">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+      </div>
+      <div class="receipt-tier">
+        <div class="receipt-tier-name">Starter Pack</div>
+        <div class="receipt-credits">1 <span>credit</span></div>
+        <div class="receipt-price">€16.00</div>
+      </div>
+      <div class="receipt-divider"></div>
+      <div class="receipt-details">
+        <div class="receipt-row">
+          <span class="receipt-row-label">Pack</span>
+          <span class="receipt-row-value">Starter — 1 Credit</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-row-label">Per Credit</span>
+          <span class="receipt-row-value">€16.00</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-row-label">Priority Level</span>
+          <span class="receipt-row-value">Standard</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-row-label">Support</span>
+          <span class="receipt-row-value">Email</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-row-label">Credits Never Expire</span>
+          <span class="receipt-row-value" style="color:#34D399;">✓ Yes</span>
+        </div>
+      </div>
+      <div class="receipt-instructions">
+        <h4>How to Use Your Credits</h4>
+        <ol>
+          <li>Log in to your AS Performance dashboard</li>
+          <li>Your credit balance will be updated automatically</li>
+          <li>Submit a new tuning file request — 1 credit per file</li>
+          <li>Our engineers process your ECU file within your priority tier</li>
+        </ol>
+      </div>
+    </div>
+    <div class="receipt-footer">
+      <p>Thank you for choosing <strong>AS Performance</strong>.<br>
+      Questions? Contact us at <a href="mailto:support@asperformance.com">support@asperformance.com</a></p>
+    </div>
+  </div>
+</body>
+</html>
