@@ -83,11 +83,11 @@ function bindUserEvents() {
       <div class="form-group"><label>Company</label><input type="text" id="new-company" placeholder="Company name"/></div>
     `, [{
       id: 'modal-create-user', label: `${icon('plus', 14)} Create User`, class: 'btn-primary',
-      onClick: (_, close) => {
+      onClick: async (_, close) => {
         const name = document.getElementById('new-name')?.value?.trim();
         const email = document.getElementById('new-email')?.value?.trim();
         if (!name || !email) { showToast('Name and email are required', 'error'); return; }
-        createProfile({
+        await createProfile({
           full_name: name, email,
           role: document.getElementById('new-role')?.value || 'customer',
           phone: document.getElementById('new-phone')?.value || '',
@@ -102,8 +102,8 @@ function bindUserEvents() {
 
   // Toggle active
   document.querySelectorAll('.toggle-user-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const profile = toggleProfileActive(btn.dataset.id);
+    btn.addEventListener('click', async () => {
+      const profile = await toggleProfileActive(btn.dataset.id);
       if (profile) {
         showToast(`${profile.full_name} ${profile.is_active ? 'activated' : 'deactivated'}`, 'success');
         renderUsersPage();
@@ -124,8 +124,8 @@ function bindUserEvents() {
         </div>
       `, [{
         id: 'modal-save-user', label: `${icon('save', 14)} Save`, class: 'btn-primary',
-        onClick: (_, close) => {
-          updateProfile(u.id, {
+        onClick: async (_, close) => {
+          await updateProfile(u.id, {
             full_name: document.getElementById('edit-name')?.value || u.full_name,
             phone: document.getElementById('edit-phone')?.value || '',
             company_name: document.getElementById('edit-company')?.value || '',
@@ -148,8 +148,8 @@ function bindUserEvents() {
     document.getElementById('users-tbody').innerHTML = renderUserRows(filtered);
     refreshIcons();
     // Re-bind after re-render
-    document.querySelectorAll('.toggle-user-btn').forEach(b => b.addEventListener('click', () => {
-      toggleProfileActive(b.dataset.id);
+    document.querySelectorAll('.toggle-user-btn').forEach(b => b.addEventListener('click', async () => {
+      await toggleProfileActive(b.dataset.id);
       renderUsersPage();
     }));
   };

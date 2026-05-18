@@ -76,11 +76,11 @@ function bindVehicleEvents(user) {
       <div class="form-group"><label>ECU Type</label><input type="text" id="v-ecu" placeholder="Bosch EDC17C42"/></div>
     `, [{
       id: 'modal-add-v', label: `${icon('plus', 14)} Add Vehicle`, class: 'btn-primary',
-      onClick: (_, close) => {
+      onClick: async (_, close) => {
         const make = document.getElementById('v-make')?.value?.trim();
         const model = document.getElementById('v-model')?.value?.trim();
         if (!make || !model) { showToast('Make and model are required', 'error'); return; }
-        createVehicle({
+        await createVehicle({
           customer_id: isCustomer() ? user.id : (document.getElementById('v-customer')?.value || user.id),
           make, model,
           year: parseInt(document.getElementById('v-year')?.value) || new Date().getFullYear(),

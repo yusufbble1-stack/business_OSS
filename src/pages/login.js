@@ -1,4 +1,4 @@
-import { signIn, signInWithGoogle } from '../lib/auth.js';
+import { signIn, signInWithGoogle, signUp } from '../lib/auth.js';
 import { navigate } from '../lib/router.js';
 import { icon, refreshIcons } from '../lib/icons.js';
 
@@ -28,9 +28,13 @@ export function renderLoginPage() {
           </button>
         </div>
 
-        <div class="login-divider">or sign in with email</div>
+        <div class="login-divider" id="email-divider">or sign in with email</div>
 
         <form id="login-form">
+          <div class="form-group" id="name-group" style="display:none">
+            <label for="login-name">Full Name</label>
+            <input type="text" id="login-name" placeholder="John Doe" autocomplete="name"/>
+          </div>
           <div class="form-group">
             <label for="login-email">Email address</label>
             <input type="email" id="login-email" placeholder="you@company.com" required autocomplete="email"/>
@@ -39,10 +43,14 @@ export function renderLoginPage() {
             <label for="login-password">Password</label>
             <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password"/>
           </div>
-          <button type="submit" class="btn btn-primary" id="login-submit">
-            ${icon('log-in', 16)} Sign In
+          <button type="submit" class="btn btn-primary" id="login-submit" style="width:100%;margin-top:8px">
+            ${icon('log-in', 16)} <span>Sign In</span>
           </button>
         </form>
+
+        <div style="text-align:center;margin-top:16px">
+          <a href="#" id="toggle-mode" style="color:var(--brand-red);font-size:12px;text-decoration:none">Don't have an account? Sign up</a>
+        </div>
 
         <div class="login-divider">Demo Accounts</div>
         <div class="demo-accounts">
@@ -85,37 +93,95 @@ export function renderLoginPage() {
     }
   });
 
-  // ===== Email/Password Sign-In =====
+  // ===== Email/Password Sign-In / Sign-Up =====
+  let isSignUp = false;
   const form = document.getElementById('login-form');
   const errorEl = document.getElementById('login-error');
   const errorMsg = document.getElementById('login-error-msg');
   const emailInput = document.getElementById('login-email');
   const passInput = document.getElementById('login-password');
+  const nameInput = document.getElementById('login-name');
+  const nameGroup = document.getElementById('name-group');
+  const submitBtn = document.getElementById('login-submit');
+  const dividerText = document.getElementById('email-divider');
+  const toggleBtn = document.getElementById('toggle-mode');
+
+  toggleBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    isSignUp = !isSignUp;
+    nameGroup.style.display = isSignUp ? 'block' : 'none';
+    nameInput.required = isSignUp;
+    dividerText.textContent = isSignUp ? 'or sign up with email' : 'or sign in with email';
+    submitBtn.innerHTML = isSignUp ? `${icon('user-plus', 16)} <span>Sign Up</span>` : `${icon('log-in', 16)} <span>Sign In</span>`;
+    toggleBtn.textContent = isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up";
+    errorEl.classList.remove('show');
+  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const btn = document.getElementById('login-submit');
-    btn.disabled = true;
-    btn.innerHTML = '<div class="spinner"></div> Signing in...';
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<div class="spinner"></div> <span>Processing...</span>';
     errorEl.classList.remove('show');
     try {
-      await signIn(emailInput.value, passInput.value);
+      if (isSignUp) {
+        await signUp(emailInput.value, passInput.value, nameInput.value);
+      } else {
+        await signIn(emailInput.value, passInput.value);
+      }
       navigate('/dashboard');
     } catch (err) {
       errorMsg.textContent = err.message;
       errorEl.classList.add('show');
-      btn.disabled = false;
-      btn.innerHTML = `${icon('log-in', 16)} Sign In`;
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = isSignUp ? `${icon('user-plus', 16)} <span>Sign Up</span>` : `${icon('log-in', 16)} <span>Sign In</span>`;
       refreshIcons();
     }
   });
 
-  // ===== Demo account quick-fill =====
+  // ===== Demo account quick-fill and auto-login =====
+  const DEMO_ACCOUNTS = {
+    'admin@asperformance.com': { name: 'Admin User', role: 'admin' },
+    'tech@asperformance.com': { name: 'Tech User', role: 'technician' },
+    'client@asperformance.com': { name: 'Client User', role: 'customer' },
+  };
+  const DEMO_PASSWORD = 'Demo123!';
+
   document.querySelectorAll('.demo-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      emailInput.value = btn.dataset.email;
-      passInput.value = 'demo123';
-      emailInput.focus();
+    btn.addEventListener('click', async () => {
+      const email = btn.dataset.email;
+      const account = DEMO_ACCOUNTS[email];
+      emailInput.value = email;
+      passInput.value = DEMO_PASSWORD;
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<div class="spinner"></div> <span>Logging in...</span>';
+      errorEl.classList.remove('show');
+
+      try {
+        // Try signing in first
+        await signIn(email, DEMO_PASSWORD);
+        navigate('/dashboard');
+      } catch (loginErr) {
+        // If account doesn't exist, create it
+        if (loginErr.message?.includes('Invalid login credentials') || loginErr.message?.includes('Email not confirmed')) {
+          try {
+            await signUp(email, DEMO_PASSWORD, account.name);
+            // After signup, update the role if it's not 'customer'
+            navigate('/dashboard');
+          } catch (signUpErr) {
+            // If signup says "check email" (email confirmation enabled), show that
+            errorMsg.textContent = signUpErr.message;
+            errorEl.classList.add('show');
+          }
+        } else {
+          errorMsg.textContent = loginErr.message;
+          errorEl.classList.add('show');
+        }
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `${icon('log-in', 16)} <span>Sign In</span>`;
+        refreshIcons();
+      }
     });
   });
 }

@@ -5,13 +5,13 @@ import { timeAgo, SERVICE_LABELS, STATUS_LABELS, showToast, showModal } from '..
 import { icon } from '../lib/icons.js';
 import { getWallet } from '../lib/wallet.js';
 
-export function renderCustomerDashboard() {
+export async function renderCustomerDashboard() {
   const app = document.getElementById('app');
   const user = getCurrentUser();
   const myRequests = demoRequests.filter(r => r.customer_id === user.id);
   const active = myRequests.filter(r => !['delivered','cancelled'].includes(r.status));
   const myVehicles = demoVehicles.filter(v => v.customer_id === user.id);
-  const wallet = getWallet(user.id);
+  const wallet = await getWallet(user.id);
 
   app.innerHTML = `
     <div class="app-layout">
@@ -105,11 +105,11 @@ export function renderCustomerDashboard() {
       <div class="form-group"><label>ECU Type</label><input type="text" id="v-ecu" placeholder="Bosch EDC17C42"/></div>
     `, [{
       id: 'modal-add-v', label: `${icon('plus', 14)} Add Vehicle`, class: 'btn-primary',
-      onClick: (_, close) => {
+      onClick: async (_, close) => {
         const make = document.getElementById('v-make')?.value?.trim();
         const model = document.getElementById('v-model')?.value?.trim();
         if (!make || !model) { showToast('Make and model required', 'error'); return; }
-        createVehicle({ customer_id: user.id, make, model, year: parseInt(document.getElementById('v-year')?.value) || new Date().getFullYear(), plate_number: document.getElementById('v-plate')?.value || '', ecu_type: document.getElementById('v-ecu')?.value || '' });
+        await createVehicle({ customer_id: user.id, make, model, year: parseInt(document.getElementById('v-year')?.value) || new Date().getFullYear(), plate_number: document.getElementById('v-plate')?.value || '', ecu_type: document.getElementById('v-ecu')?.value || '' });
         showToast(`${make} ${model} added!`, 'success');
         close();
         renderCustomerDashboard();

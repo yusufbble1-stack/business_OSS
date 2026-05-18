@@ -4,7 +4,7 @@ import { demoRequests, getProfileById, getVehicleById, changeRequestStatus } fro
 import { timeAgo, SERVICE_LABELS, STATUS_LABELS, showToast } from '../lib/utils.js';
 import { icon } from '../lib/icons.js';
 
-export function renderTechDashboard() {
+export async function renderTechDashboard() {
   const app = document.getElementById('app');
   const user = getCurrentUser();
 
@@ -76,15 +76,15 @@ export function renderTechDashboard() {
 
   // Bind action buttons
   document.querySelectorAll('.start-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      changeRequestStatus(btn.dataset.id, 'in_progress', user.id);
+    btn.addEventListener('click', async () => {
+      await changeRequestStatus(btn.dataset.id, 'in_progress', user.id);
       showToast('Work started!', 'success');
       renderTechDashboard();
     });
   });
   document.querySelectorAll('.complete-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      changeRequestStatus(btn.dataset.id, 'completed', user.id);
+    btn.addEventListener('click', async () => {
+      await changeRequestStatus(btn.dataset.id, 'completed', user.id);
       showToast('Request completed!', 'success');
       renderTechDashboard();
     });

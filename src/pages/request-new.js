@@ -25,10 +25,10 @@ function renderServiceCard(svc) {
   </label>`;
 }
 
-export function renderNewRequest() {
+export async function renderNewRequest() {
   const app = document.getElementById('app');
   const user = getCurrentUser();
-  const wallet = getWallet(user.id);
+  const wallet = await getWallet(user.id);
   
   // Extract pre-selected vehicle type from URL if any
   const urlParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
@@ -990,13 +990,13 @@ export function renderNewRequest() {
   }
 
   // Submit Handler
-  document.getElementById('ecu-wizard-form').addEventListener('submit', (e) => {
+  document.getElementById('ecu-wizard-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const selectedIds = Array.from(document.querySelectorAll('.service-cb:checked')).map(cb => cb.value);
     const totalCredits = calculateTotalCredits(selectedIds);
     
-    if (!hasCredits(user.id, totalCredits)) {
+    if (!(await hasCredits(user.id, totalCredits))) {
       showToast(`Insufficient credits. You need ${totalCredits} but have ${wallet.balance}. Please purchase more.`, 'error');
       setTimeout(() => navigate('/credits'), 1500);
       return;
@@ -1006,9 +1006,9 @@ export function renderNewRequest() {
     const title = `${document.getElementById('v-make').value} ${document.getElementById('v-model').value} - ${serviceNames[0] || 'File Service'}`;
     const services = serviceNames.join(', ');
 
-    const newReq = createRequest({
+    const newReq = await createRequest({
       customer_id: user.id,
-      vehicle_id: 'v1',
+      vehicle_id: null,
       title: title,
       description: `
         Vehicle: ${document.getElementById('v-type').value} ${document.getElementById('v-make').value} ${document.getElementById('v-model').value}
@@ -1027,7 +1027,7 @@ export function renderNewRequest() {
       acm_file: document.getElementById('acm-file')?.files[0]?.name || null
     });
 
-    useCredit(user.id, `${title} (${totalCredits} credits)`, newReq.id, totalCredits);
+    await useCredit(user.id, `${title} (${totalCredits} credits)`, newReq.id, totalCredits);
 
     showToast(`Order submitted! ${totalCredits} credit${totalCredits !== 1 ? 's' : ''} deducted. Generating post-flash checklist...`, 'success');
     

@@ -12,6 +12,7 @@ import './styles/dashboard-credits.css';
 
 import { registerRoute, startRouter, navigate } from './lib/router.js';
 import { initCurrentUser, isAdmin, isTechnician, isCustomer } from './lib/auth.js';
+import { initStore } from './lib/store.js';
 
 import { renderLoginPage } from './pages/login.js';
 import { renderAdminDashboard } from './pages/dashboard-admin.js';
@@ -42,6 +43,7 @@ function withAuth(renderFn) {
   return async (params) => {
     const user = await initCurrentUser();
     if (!user) { navigate('/login'); return; }
+    await initStore();
     renderFn(params);
   };
 }
@@ -50,6 +52,7 @@ function withAuth(renderFn) {
 async function dashboardRouter() {
   const user = await initCurrentUser();
   if (!user) { navigate('/login'); return; }
+  await initStore();
   if (isAdmin()) renderAdminDashboard();
   else if (isTechnician()) renderTechDashboard();
   else renderCustomerDashboard();

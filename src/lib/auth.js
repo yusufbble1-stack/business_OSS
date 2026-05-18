@@ -1,68 +1,81 @@
 import { supabase, isDemoMode } from './supabase.js';
 import { showToast } from './utils.js';
 
-// ===== DEMO DATA =====
-const DEMO_USERS = {
-  'admin@asperformance.com': { id: 'admin-1', email: 'admin@asperformance.com', full_name: 'Yussuf Admin', role: 'admin', phone: '+33 6 00 00 00', is_active: true },
-  'tech@asperformance.com': { id: 'tech-1', email: 'tech@asperformance.com', full_name: 'Alex Technician', role: 'technician', phone: '+33 6 11 11 11', is_active: true },
-  'client@asperformance.com': { id: 'customer-1', email: 'client@asperformance.com', full_name: 'Jean Dupont', role: 'customer', company_name: 'SOS Reprog', phone: '+33 6 22 22 22', is_active: true },
-};
-
-// Demo passwords — prevents unauthorized access when deployed publicly
-const DEMO_PASSWORD = 'demo2026';
-
 let currentUser = null;
 
 // ===== AUTH FUNCTIONS =====
+
 export async function signIn(email, password) {
   if (isDemoMode) {
-    const user = DEMO_USERS[email.toLowerCase()];
-    if (!user || password !== DEMO_PASSWORD) throw new Error('Invalid credentials. Try: admin@asperformance.com with password demo2026');
-    currentUser = { ...user };
-    localStorage.setItem('asp_demo_user', JSON.stringify(currentUser));
-    return currentUser;
+    throw new Error('Demo mode is disabled. Please connect to Supabase.');
   }
+  
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
+  
   const profile = await getProfile(data.user.id);
-  if (!profile.is_active) { await supabase.auth.signOut(); throw new Error('Account is deactivated'); }
+  if (!profile.is_active) {
+    await supabase.auth.signOut();
+    throw new Error('Account is deactivated');
+  }
+  
+  currentUser = profile;
+  return currentUser;
+}
+
+export async function signUp(email, password, fullName) {
+  if (isDemoMode) {
+    throw new Error('Demo mode is disabled. Please connect to Supabase.');
+  }
+
+  // Pass fullName in user metadata so the handle_new_user trigger can pick it up
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: fullName
+      }
+    }
+  });
+
+  if (error) throw error;
+  
+  if (!data.session) {
+    throw new Error('Sign up successful! Please check your email to confirm your account before logging in.');
+  }
+
+  const profile = await getProfile(data.user.id);
   currentUser = profile;
   return currentUser;
 }
 
 /**
  * Sign in with Google using the credential JWT from Google Identity Services.
- * Decodes the JWT payload to extract user info (name, email, picture).
- * Creates a customer account in demo mode.
  */
 export async function signInWithGoogle(credentialResponse) {
-  try {
-    // Decode the JWT payload (base64url → JSON)
-    const payload = JSON.parse(atob(credentialResponse.credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-    
-    const email = payload.email;
-    const fullName = payload.name || payload.given_name || email.split('@')[0];
-    const picture = payload.picture || '';
+  if (isDemoMode) {
+    throw new Error('Demo mode is disabled. Please connect to Supabase.');
+  }
 
-    // Check if this Google user already exists in demo users
-    if (DEMO_USERS[email.toLowerCase()]) {
-      currentUser = { ...DEMO_USERS[email.toLowerCase()], picture };
-    } else {
-      // Create a new customer account for this Google user
-      currentUser = {
-        id: 'google-' + payload.sub,
-        email: email,
-        full_name: fullName,
-        role: 'customer',
-        company_name: '',
-        phone: '',
-        picture: picture,
-        is_active: true,
-        provider: 'google',
-      };
+  try {
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: 'google',
+      token: credentialResponse.credential,
+    });
+    
+    if (error) throw error;
+
+    // The database trigger automatically creates the profile on first signup.
+    // We just fetch it here.
+    const profile = await getProfile(data.user.id);
+    
+    if (!profile.is_active) {
+      await supabase.auth.signOut();
+      throw new Error('Account is deactivated');
     }
     
-    localStorage.setItem('asp_demo_user', JSON.stringify(currentUser));
+    currentUser = profile;
     return currentUser;
   } catch (err) {
     console.error('[Auth] Google sign-in failed:', err);
@@ -71,36 +84,36 @@ export async function signInWithGoogle(credentialResponse) {
 }
 
 export async function signOut() {
-  if (isDemoMode) {
-    currentUser = null;
-    localStorage.removeItem('asp_demo_user');
-    window.location.hash = '#/home';
-    return;
+  if (!isDemoMode) {
+    await supabase.auth.signOut();
   }
-  await supabase.auth.signOut();
   currentUser = null;
   window.location.hash = '#/home';
 }
 
 /**
- * Async: loads user from cache/localStorage/supabase. Use in auth guards.
+ * Async: loads user from Supabase session. Use in auth guards.
  */
 export async function initCurrentUser() {
   if (currentUser) return currentUser;
-  if (isDemoMode) {
-    const saved = localStorage.getItem('asp_demo_user');
-    if (saved) { currentUser = JSON.parse(saved); return currentUser; }
+  
+  if (isDemoMode) return null;
+
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return null;
+    
+    currentUser = await getProfile(session.user.id);
+    return currentUser;
+  } catch (err) {
+    console.error('[Auth] Error initializing user:', err);
     return null;
   }
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
-  currentUser = await getProfile(user.id);
-  return currentUser;
 }
 
 /**
  * Sync: returns the already-loaded current user (for rendering). 
- * Must only be called AFTER initCurrentUser() has resolved (handled by withAuth in main.js).
+ * Must only be called AFTER initCurrentUser() has resolved.
  */
 export function getCurrentUser() {
   return currentUser;
@@ -112,16 +125,24 @@ export function getCurrentUser() {
 export function updateCurrentUserCache(updates) {
   if (currentUser) {
     Object.assign(currentUser, updates);
-    if (isDemoMode) {
-      localStorage.setItem('asp_demo_user', JSON.stringify(currentUser));
-    }
   }
 }
 
-async function getProfile(userId) {
-  const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
-  if (error) throw error;
-  return data;
+async function getProfile(userId, retries = 5) {
+  for (let i = 0; i < retries; i++) {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .maybeSingle();
+      
+    if (error) throw error;
+    if (data) return data;
+    
+    // Wait 500ms before retrying to allow trigger to complete
+    await new Promise(r => setTimeout(r, 500));
+  }
+  throw new Error('Could not load profile. Please refresh or contact support.');
 }
 
 export function getUserRole() {
@@ -133,7 +154,10 @@ export function isTechnician() { return currentUser?.role === 'technician'; }
 export function isCustomer() { return currentUser?.role === 'customer'; }
 
 export function requireAuth() {
-  if (!currentUser) { window.location.hash = '#/login'; return false; }
+  if (!currentUser) { 
+    window.location.hash = '#/login'; 
+    return false; 
+  }
   return true;
 }
 

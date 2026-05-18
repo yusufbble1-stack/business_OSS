@@ -135,6 +135,35 @@ export function initChatbot() {
         })
       });
 
+      if (response.status === 429) {
+        // Rate limited — wait 3s and retry once
+        await new Promise(r => setTimeout(r, 3000));
+        const retry = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'HTTP-Referer': window.location.origin,
+            'X-OpenRouter-Title': 'AS Performance Chiptuning',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'deepseek/deepseek-v4-flash:free',
+            messages: messageHistory
+          })
+        });
+        if (!retry.ok) {
+          removeTypingIndicator();
+          appendMessage('bot', 'I\'m getting a lot of requests right now. Please wait a moment and try again.');
+          return;
+        }
+        const retryData = await retry.json();
+        removeTypingIndicator();
+        const botResp = retryData.choices[0].message.content;
+        appendMessage('bot', botResp);
+        messageHistory.push({ role: 'assistant', content: botResp });
+        return;
+      }
+
       removeTypingIndicator();
 
       if (!response.ok) {

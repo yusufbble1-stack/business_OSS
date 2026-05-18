@@ -320,9 +320,9 @@ function bindRequestDetailEvents(request, user) {
   const sendBtn = document.getElementById('btn-send');
   const msgInput = document.getElementById('msg-input');
   if (sendBtn && msgInput) {
-    const doSend = () => {
+    const doSend = async () => {
       if (!msgInput.value.trim()) return;
-      sendMessage(request.id, user.id, msgInput.value.trim());
+      await sendMessage(request.id, user.id, msgInput.value.trim());
       showToast('Message sent', 'success');
       msgInput.value = '';
       renderRequestDetail({ id: request.id });
@@ -332,14 +332,14 @@ function bindRequestDetailEvents(request, user) {
   }
 
   // Admin: Save changes
-  document.getElementById('btn-save-request')?.addEventListener('click', () => {
+  document.getElementById('btn-save-request')?.addEventListener('click', async () => {
     const techId = document.getElementById('assign-tech')?.value || null;
     const status = document.getElementById('change-status')?.value;
     const price = parseFloat(document.getElementById('req-price')?.value) || null;
     const isPaid = document.getElementById('req-paid')?.value === 'true';
 
-    if (techId && techId !== request.assigned_to) assignRequest(request.id, techId, user.id);
-    if (status !== request.status) changeRequestStatus(request.id, status, user.id);
+    if (techId && techId !== request.assigned_to) await assignRequest(request.id, techId, user.id);
+    if (status !== request.status) await changeRequestStatus(request.id, status, user.id);
     request.price = price;
     request.is_paid = isPaid;
     request.updated_at = new Date().toISOString();
@@ -349,15 +349,15 @@ function bindRequestDetailEvents(request, user) {
   });
 
   // Tech: Start work
-  document.getElementById('btn-start-work')?.addEventListener('click', () => {
-    changeRequestStatus(request.id, 'in_progress', user.id);
+  document.getElementById('btn-start-work')?.addEventListener('click', async () => {
+    await changeRequestStatus(request.id, 'in_progress', user.id);
     showToast('Work started!', 'success');
     setTimeout(() => renderRequestDetail({ id: request.id }), 500);
   });
 
   // Tech: Complete
-  document.getElementById('btn-complete')?.addEventListener('click', () => {
-    changeRequestStatus(request.id, 'completed', user.id);
+  document.getElementById('btn-complete')?.addEventListener('click', async () => {
+    await changeRequestStatus(request.id, 'completed', user.id);
     showToast('Request marked as completed!', 'success');
     setTimeout(() => renderRequestDetail({ id: request.id }), 500);
   });

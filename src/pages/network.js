@@ -262,8 +262,8 @@ function initGlobe() {
     .backgroundColor('rgba(0,0,0,0)')
 
     // Dark texture (the one you liked)
-    .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
-    .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+    .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+    .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
     .showAtmosphere(true)
     .atmosphereColor('#C41E1E')
     .atmosphereAltitude(0.18)
