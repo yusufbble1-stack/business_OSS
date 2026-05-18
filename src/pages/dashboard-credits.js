@@ -2,16 +2,19 @@
 import { renderSidebar, renderHeader, initLayoutEvents } from '../components/layout.js';
 import { getCurrentUser } from '../lib/auth.js';
 import { getWalletStats, getTransactions } from '../lib/wallet.js';
-import { CREDIT_PACKS, getCheckoutUrl, isPayhipConfigured } from '../lib/payhip.js';
+import { CREDIT_PACKS, SINGLE_CREDIT_PRICE, getCheckoutUrl, isPayhipConfigured } from '../lib/payhip.js';
 import { icon } from '../lib/icons.js';
 
 const CHECK_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
 const ARROW_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
 
-export function renderDashboardCreditsPage() {
+export async function renderDashboardCreditsPage() {
   const app = document.getElementById('app');
   const user = getCurrentUser();
-  const stats = getWalletStats(user?.id);
+
+  // Fetch wallet stats asynchronously
+  let stats = { balance: 0, filesProcessed: 0, priority: 'Standard', rating: '—', recentTransactions: [] };
+  try { stats = await getWalletStats(user?.id); } catch(e) { console.warn('[DashCredits] Stats error:', e); }
   const transactions = stats.recentTransactions || [];
 
   app.innerHTML = `
@@ -23,7 +26,7 @@ export function renderDashboardCreditsPage() {
           <div class="page-header animate-in">
             <div>
               <h1>${icon('credit-card', 24)} My Credits</h1>
-              <p>Manage your wallet, purchase credits, and view transaction history.</p>
+              <p>Manage your wallet, purchase professional credit packs, and view transaction history.</p>
             </div>
           </div>
 
@@ -70,17 +73,20 @@ export function renderDashboardCreditsPage() {
           <!-- Credit Packs Section -->
           <div class="card animate-in" style="animation-delay:0.1s;padding:24px">
             <div class="card-header" style="margin-bottom:20px">
-              <h3>Purchase <span style="color:#C41E1E">Credit Packs</span></h3>
-              <p class="text-sm text-muted" style="margin:4px 0 0">Bigger packs = lower per-credit cost + higher priority processing</p>
+              <h3>Purchase <span style="color:#C41E1E">Professional Packs</span></h3>
+              <p class="text-sm text-muted" style="margin:4px 0 0">Bigger packs = lower per-credit cost + higher priority + faster delivery</p>
             </div>
             <div class="dcr-packs-grid">
               ${CREDIT_PACKS.map(pack => `
-                <div class="dcr-pack ${pack.featured ? 'dcr-pack-featured' : ''}">
-                  ${pack.badge ? `<span class="dcr-pack-badge ${pack.featured ? 'dcr-badge-best' : ''}">${pack.badge}</span>` : ''}
+                <div class="dcr-pack ${pack.featured ? 'dcr-pack-featured' : ''} ${pack.elite ? 'dcr-pack-elite' : ''} ${pack.discreet ? 'dcr-pack-discreet' : ''}">
+                  ${pack.badge ? `<span class="dcr-pack-badge ${pack.featured ? 'dcr-badge-best' : ''} ${pack.elite ? 'dcr-badge-elite' : ''}">${pack.badge}</span>` : ''}
                   <div class="dcr-pack-tier">${pack.tier}</div>
                   <div class="dcr-pack-credits">${pack.credits} <span>credit${pack.credits > 1 ? 's' : ''}</span></div>
                   <div class="dcr-pack-price">${pack.price}</div>
-                  <div class="dcr-pack-per">${pack.perCredit}/credit · ${pack.priority}</div>
+                  <div class="dcr-pack-per">
+                    ${pack.perCredit}/credit · ${pack.priority}
+                    ${pack.savingsPercent > 0 ? `<span class="dcr-savings-tag">-${pack.savingsPercent}%</span>` : ''}
+                  </div>
                   <ul class="dcr-pack-features">
                     ${pack.features.map(f => `<li>${CHECK_SVG} ${f}</li>`).join('')}
                   </ul>
