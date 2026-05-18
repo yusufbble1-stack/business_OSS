@@ -53,7 +53,7 @@ export async function signUp(email, password, fullName) {
 /**
  * Sign in with Google using the credential JWT from Google Identity Services.
  */
-export async function signInWithGoogle(credentialResponse) {
+export async function signInWithGoogle(credentialResponse, nonce) {
   if (isDemoMode) {
     throw new Error('Demo mode is disabled. Please connect to Supabase.');
   }
@@ -62,6 +62,7 @@ export async function signInWithGoogle(credentialResponse) {
     const { data, error } = await supabase.auth.signInWithIdToken({
       provider: 'google',
       token: credentialResponse.credential,
+      nonce: nonce,
     });
     
     if (error) throw error;

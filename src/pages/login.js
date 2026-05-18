@@ -187,14 +187,30 @@ export function renderLoginPage() {
 }
 
 // ===== Google Identity Services initialization =====
-function initGoogleSignIn() {
+let currentNonce = '';
+
+async function generateNonce() {
+  const nonceBytes = crypto.getRandomValues(new Uint8Array(32));
+  const nonce = btoa(String.fromCharCode(...nonceBytes));
+  const encoder = new TextEncoder();
+  const encodedNonce = encoder.encode(nonce);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', encodedNonce);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashedNonce = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return { nonce, hashedNonce };
+}
+
+async function initGoogleSignIn() {
   // Wait for the GSI script to load
-  function tryInit() {
+  async function tryInit() {
     if (window.google?.accounts?.id) {
+      const { nonce, hashedNonce } = await generateNonce();
+      currentNonce = nonce;
       window.google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         callback: handleGoogleCredential,
         auto_select: false,
+        nonce: hashedNonce,
       });
     } else {
       setTimeout(tryInit, 200);
@@ -214,7 +230,7 @@ async function handleGoogleCredential(response) {
   }
   
   try {
-    await signInWithGoogle(response);
+    await signInWithGoogle(response, currentNonce);
     navigate('/dashboard');
   } catch (err) {
     if (errorEl && errorMsg) {
