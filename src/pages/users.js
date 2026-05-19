@@ -32,7 +32,7 @@ export function renderUsersPage() {
           </div>
 
           <div class="card animate-in" style="padding:0;overflow-x:auto">
-            <table>
+            <table style="min-width: 800px;">
               <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Company</th><th>Phone</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
               <tbody id="users-tbody">${renderUserRows(demoProfiles)}</tbody>
             </table>

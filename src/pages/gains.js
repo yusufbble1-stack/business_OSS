@@ -277,14 +277,14 @@ export function renderGainsPage() {
       <div class="hp-page">
         <nav class="hp-nav scrolled">
           <div class="hp-nav-inner">
-            <div class="hp-nav-brand">
+            <a href="#/home" class="hp-nav-brand" style="text-decoration:none">
               <img src="/assets/logo.png" alt="AS Performance" class="hp-logo"/>
               <div>
                 <span class="hp-brand-name">AS</span>
                 <span class="hp-brand-bold">Performance</span>
                 <span class="hp-brand-sub">chiptuning</span>
               </div>
-            </div>
+            </a>
             <div class="hp-nav-pill">
               <a href="#/home" class="hp-nav-link">Home</a>
               <a href="#/pricing" class="hp-nav-link">Pricing</a>
@@ -303,7 +303,19 @@ export function renderGainsPage() {
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
           </div>
+          <div class="hp-mobile-nav" id="hp-mobile-nav">
+            <a href="#/home">Home</a>
+            <a href="#/pricing">Pricing</a>
+            <a href="#/credits">Credits</a>
+            <a href="#/network">Network</a>
+            <a href="#/gains">Calculator</a>
+            <div class="hp-mobile-nav-actions">
+              <a href="mailto:asperformance.contact@gmail.com" class="hp-nav-cta">Contact Us</a>
+              <a href="#/login" class="hp-nav-login">Partner Login</a>
+            </div>
+          </div>
         </nav>
+        <div class="hp-mobile-backdrop" id="hp-mobile-backdrop"></div>
         <div style="padding-top:100px;max-width:1200px;margin:0 auto;padding-left:32px;padding-right:32px;padding-bottom:60px">
           ${gainsContent}
         </div>
@@ -319,9 +331,31 @@ export function renderGainsPage() {
 
     // Mobile toggle
     const toggle = document.getElementById('hp-mobile-toggle');
-    const links = document.querySelector('.hp-nav-links');
-    if (toggle && links) {
-      toggle.addEventListener('click', () => links.classList.toggle('hp-mobile-open'));
+    const mobileNav = document.getElementById('hp-mobile-nav');
+    const backdrop = document.getElementById('hp-mobile-backdrop');
+
+    if (toggle && mobileNav) {
+      const closeMobileNav = () => {
+        mobileNav.classList.remove('hp-mobile-open');
+        if (backdrop) backdrop.classList.remove('visible');
+        document.body.style.overflow = '';
+      };
+      const openMobileNav = () => {
+        mobileNav.classList.add('hp-mobile-open');
+        if (backdrop) backdrop.classList.add('visible');
+        document.body.style.overflow = 'hidden';
+      };
+
+      toggle.addEventListener('click', () => {
+        if (mobileNav.classList.contains('hp-mobile-open')) closeMobileNav();
+        else openMobileNav();
+      });
+
+      mobileNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMobileNav);
+      });
+
+      if (backdrop) backdrop.addEventListener('click', closeMobileNav);
     }
   }
 

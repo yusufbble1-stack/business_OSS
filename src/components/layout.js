@@ -36,7 +36,7 @@ export function renderSidebar() {
 
   return `
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
+      <div class="sidebar-header" style="cursor:pointer" onclick="window.location.hash='#/'">
         <img src="/assets/logo.png" alt="AS Performance" class="sidebar-logo"/>
         <div class="sidebar-brand">
           <span class="sidebar-title">AS Performance</span>
@@ -153,7 +153,8 @@ export function initLayoutEvents() {
       document.body.style.overflow = '';
     };
 
-    mobileBtn.addEventListener('click', () => {
+    mobileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       if (sidebar.classList.contains('mobile-open')) closeSidebar();
       else openSidebar();
     });
@@ -168,12 +169,21 @@ export function initLayoutEvents() {
       });
     });
 
-    // Close on outside click
-    document.addEventListener('click', (e) => {
-      if (sidebar.classList.contains('mobile-open') && !sidebar.contains(e.target) && e.target !== mobileBtn && !mobileBtn.contains(e.target) && e.target !== backdrop) {
-        closeSidebar();
-      }
-    });
+    // Global click listener attached only once per session
+    if (!window.layoutEventInitialized) {
+      document.addEventListener('click', (e) => {
+        const curSidebar = document.getElementById('sidebar');
+        const curBtn = document.getElementById('mobile-menu-btn');
+        if (curSidebar && curSidebar.classList.contains('mobile-open')) {
+          if (!curSidebar.contains(e.target) && curBtn && !curBtn.contains(e.target) && !e.target.closest('.sidebar-backdrop')) {
+            curSidebar.classList.remove('mobile-open');
+            document.querySelector('.sidebar-backdrop')?.classList.remove('visible');
+            document.body.style.overflow = '';
+          }
+        }
+      });
+      window.layoutEventInitialized = true;
+    }
   }
 
   // ===== Notification panel toggle =====

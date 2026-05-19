@@ -50,7 +50,7 @@ function renderAdminReferralView() {
         <h3>${icon('link', 18)} Active Referral Codes</h3>
         <button class="btn btn-primary btn-sm" id="btn-sim-referral">${icon('zap', 14)} Simulate Referral</button>
       </div>
-      <table style="margin-top:12px">
+      <div style="overflow-x:auto"><table style="margin-top:12px;min-width:600px">
         <thead><tr><th>Client</th><th>Code</th><th>Tier</th><th>Referrals</th><th>Credits Earned</th><th>Slots</th></tr></thead>
         <tbody>
           ${allCodes.map(c => {
@@ -70,7 +70,7 @@ function renderAdminReferralView() {
             </tr>`;
           }).join('')}
         </tbody>
-      </table>
+      </table></div>
     </div>
 
     <!-- Recent Referral Activity -->
@@ -78,7 +78,7 @@ function renderAdminReferralView() {
       <div class="card-header" style="padding:20px 24px 0">
         <h3>${icon('activity', 18)} Referral History</h3>
       </div>
-      <table style="margin-top:12px">
+      <div style="overflow-x:auto"><table style="margin-top:12px;min-width:600px">
         <thead><tr><th>Referrer</th><th>Referred</th><th>Order</th><th>Reward</th><th>Status</th><th>Date</th></tr></thead>
         <tbody>
           ${referralSignups.map(s => {
@@ -96,7 +96,7 @@ function renderAdminReferralView() {
           }).join('')}
           ${!referralSignups.length ? '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--brand-muted)">No referrals yet</td></tr>' : ''}
         </tbody>
-      </table>
+      </table></div>
     </div>
   `;
 }

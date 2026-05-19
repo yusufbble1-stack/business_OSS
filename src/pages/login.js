@@ -9,11 +9,11 @@ export function renderLoginPage() {
   app.innerHTML = `
     <div class="login-wrapper">
       <div class="login-card">
-        <div class="login-logo">
+        <a href="#/home" class="login-logo" style="text-decoration:none; color:inherit;">
           <img src="/assets/logo.png" alt="AS Performance Chiptuning"/>
           <h1>AS Performance</h1>
           <span>CHIPTUNING BUSINESS OS</span>
-        </div>
+        </a>
 
         <div class="login-error" id="login-error">
           ${icon('alert-circle', 16)}

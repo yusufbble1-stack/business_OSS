@@ -15,14 +15,14 @@ export function renderHomepage() {
       <!-- Navigation — Apple-style centered pill -->
       <nav class="hp-nav">
         <div class="hp-nav-inner">
-          <div class="hp-nav-brand">
+          <a href="#/home" class="hp-nav-brand" style="text-decoration:none">
             <img src="/assets/logo.png" alt="AS Performance" class="hp-logo"/>
             <div>
               <span class="hp-brand-name">AS</span>
               <span class="hp-brand-bold">Performance</span>
               <span class="hp-brand-sub">chiptuning</span>
             </div>
-          </div>
+          </a>
           <div class="hp-nav-pill">
             <a href="#/home" class="hp-nav-link active">Home</a>
             <a href="#/pricing" class="hp-nav-link">Pricing</a>

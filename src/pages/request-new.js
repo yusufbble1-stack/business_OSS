@@ -645,6 +645,16 @@ export async function renderNewRequest() {
       .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
         background: rgba(0,0,0,0.4); border-color: rgba(196,30,30,0.5); box-shadow: 0 0 0 3px rgba(196,30,30,0.15);
       }
+      @media(max-width:768px){
+        .wizard-glass-container form{padding:20px 16px!important}
+        .wizard-glass-container h2{font-size:16px!important}
+        .svc-tab{padding:6px 12px!important;font-size:11px!important}
+        .tooltip .tooltip-text{width:200px;margin-left:-100px;font-size:11px;padding:10px 12px}
+      }
+      @media(max-width:480px){
+        .wizard-glass-container form{padding:14px 10px!important}
+        .wizard-glass-container h2{font-size:14px!important}
+      }
     </style>
   `;
 

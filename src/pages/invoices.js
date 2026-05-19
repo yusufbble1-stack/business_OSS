@@ -321,7 +321,7 @@ export function renderInvoicesPage() {
               <h3>${icon('archive', 18)} Saved Invoices</h3>
             </div>
             <div class="invoices-table-wrap" style="border:none;background:none">
-              <table>
+              <table style="min-width:600px">
                 <thead><tr><th>Invoice</th><th>Client</th><th>Date</th><th>Total</th><th>Status</th></tr></thead>
                 <tbody>
                   ${savedInvoices.map(inv => {

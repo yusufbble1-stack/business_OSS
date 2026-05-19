@@ -179,12 +179,12 @@ export function renderAdminDashboard() {
               }).join('')}
             </div>
 
-            <div class="card animate-in" style="animation-delay:0.45s;padding:0;overflow:hidden">
+            <div class="card animate-in" style="animation-delay:0.45s;padding:0;overflow-x:auto">
               <div class="card-header" style="padding:20px 24px 0">
                 <h3>${icon('clipboard-list', 18)} Recent Requests</h3>
                 <a href="#/requests" class="btn btn-ghost btn-sm" style="color:#fff">View All ${icon('arrow-right', 14)}</a>
               </div>
-              <table style="margin-top:12px">
+              <table style="margin-top:12px;min-width:500px">
                 <thead><tr><th>Request</th><th>Service</th><th>Status</th><th>Date</th></tr></thead>
                 <tbody>
                   ${recentRequests.map(r => {
