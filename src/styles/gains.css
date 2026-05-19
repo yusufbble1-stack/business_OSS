@@ -200,4 +200,17 @@
 }
 @media(max-width:480px){
   .gains-select-grid{grid-template-columns:1fr}
+  .gains-gauge{width:80px;height:80px}
+  .gains-gauge-value{font-size:18px}
+  .gains-spec-val{font-size:24px}
+  .gains-selector{padding:20px 16px}
+  .gains-power-card{padding:20px 16px}
+  .gains-specs{padding:20px 16px}
+  .gains-diff-row{padding:10px 12px}
+  .gains-diff-value{font-size:16px}
+  .gains-compare-label{font-size:10px;width:40px}
+  .gains-type-cards{grid-template-columns:repeat(3,1fr);gap:8px}
+  .gains-type-card{padding:10px 8px}
+  .gains-type-card span{font-size:10px}
+  .gains-page-header h1{font-size:var(--text-xl)}
 }

@@ -336,6 +336,28 @@ tr:last-child td{border-bottom:none}
 
 /* ===== RESPONSIVE ===== */
 @media(max-width:1024px){.form-row{grid-template-columns:1fr}}
-@media(max-width:768px){h1{font-size:var(--text-2xl)}.notif-panel,.msg-panel{width:calc(100vw - 32px);right:-60px}}
-@media(max-width:480px){h1{font-size:var(--text-xl)}.btn-lg{padding:10px 20px;font-size:var(--text-sm)}.notif-panel,.msg-panel{right:-100px}}
+@media(max-width:768px){
+  h1{font-size:var(--text-2xl)}
+  .notif-panel,.msg-panel{position:fixed;top:auto;bottom:0;left:0;right:0;width:100%;max-height:70vh;border-radius:12px 12px 0 0;animation:slideUp 0.3s var(--ease)}
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .modal{width:95%;max-width:none;padding:var(--space-6);margin:16px}
+  .modal-footer{flex-direction:column}
+  .modal-footer .btn{width:100%;justify-content:center}
+  .toast-container{top:auto;bottom:var(--space-4);left:var(--space-4);right:var(--space-4)}
+  .toast{min-width:auto;width:100%}
+  table{font-size:var(--text-xs)}
+  th{padding:10px 8px;font-size:9px;letter-spacing:0.5px}
+  td{padding:10px 8px}
+  .empty-state{padding:var(--space-8) var(--space-4)}
+}
+@media(max-width:480px){
+  h1{font-size:var(--text-xl)}
+  .btn-lg{padding:10px 20px;font-size:var(--text-sm)}
+  .modal{padding:var(--space-4)}
+  .modal-header h2{font-size:var(--text-lg)}
+  .badge{font-size:10px;padding:3px 8px}
+  .form-group{margin-bottom:var(--space-3)}
+  input,select,textarea{padding:9px 12px;font-size:14px}
+  label{font-size:10px}
+}
 

@@ -365,4 +365,22 @@
   .cr-partner-btn { width: 100%; justify-content: center; }
   .cr-trust-bar { flex-direction: column; gap: 16px; }
   .cr-savings-row-label { font-size: var(--text-xs); }
+  .cr-hero { padding: 100px 16px 40px; }
+  .cr-section { padding: 0 16px 60px; }
+  .cr-wallet-bar { padding: 0 16px; }
+  .cr-success-banner { padding: 0 16px; }
+}
+@media (max-width: 480px) {
+  .cr-hero h1 { font-size: 1.6rem; }
+  .cr-hero p { font-size: 13px; }
+  .cr-pack-credits { font-size: 2.2rem; }
+  .cr-pack-price { font-size: var(--text-xl); }
+  .cr-wallet-balance { font-size: 1.5rem; }
+  .cr-wallet-inner { padding: 18px 16px; }
+  .cr-pack { padding: 24px 18px 22px; }
+  .cr-tx { padding: 10px 16px; gap: 10px; }
+  .cr-tx-icon { width: 30px; height: 30px; }
+  .cr-savings-card { margin: 0 -8px; }
+  .cr-how-num { font-size: 2rem; }
+  .cr-section-header h2 { font-size: var(--text-xl); }
 }

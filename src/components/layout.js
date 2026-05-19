@@ -130,14 +130,48 @@ export function initLayoutEvents() {
   // Logout
   document.getElementById('btn-logout')?.addEventListener('click', () => signOut());
 
-  // Mobile sidebar toggle
+  // Mobile sidebar toggle with backdrop
   const mobileBtn = document.getElementById('mobile-menu-btn');
   const sidebar = document.getElementById('sidebar');
   if (mobileBtn && sidebar) {
-    mobileBtn.addEventListener('click', () => sidebar.classList.toggle('mobile-open'));
+    // Create backdrop element if it doesn't exist
+    let backdrop = document.querySelector('.sidebar-backdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.className = 'sidebar-backdrop';
+      sidebar.parentNode.insertBefore(backdrop, sidebar.nextSibling);
+    }
+
+    const openSidebar = () => {
+      sidebar.classList.add('mobile-open');
+      backdrop.classList.add('visible');
+      document.body.style.overflow = 'hidden';
+    };
+    const closeSidebar = () => {
+      sidebar.classList.remove('mobile-open');
+      backdrop.classList.remove('visible');
+      document.body.style.overflow = '';
+    };
+
+    mobileBtn.addEventListener('click', () => {
+      if (sidebar.classList.contains('mobile-open')) closeSidebar();
+      else openSidebar();
+    });
+
+    // Close on backdrop click
+    backdrop.addEventListener('click', closeSidebar);
+
+    // Close sidebar when clicking a nav link (on mobile)
+    sidebar.querySelectorAll('.sidebar-link').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) closeSidebar();
+      });
+    });
+
+    // Close on outside click
     document.addEventListener('click', (e) => {
-      if (sidebar.classList.contains('mobile-open') && !sidebar.contains(e.target) && e.target !== mobileBtn && !mobileBtn.contains(e.target)) {
-        sidebar.classList.remove('mobile-open');
+      if (sidebar.classList.contains('mobile-open') && !sidebar.contains(e.target) && e.target !== mobileBtn && !mobileBtn.contains(e.target) && e.target !== backdrop) {
+        closeSidebar();
       }
     });
   }

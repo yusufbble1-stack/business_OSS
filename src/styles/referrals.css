@@ -219,3 +219,17 @@
   .ref-how-works{grid-template-columns:1fr}
   .ref-code-badge{font-size:13px;padding:6px 14px}
 }
+@media(max-width:480px){
+  .ref-hero{padding:20px 12px}
+  .ref-hero-title{font-size:20px}
+  .ref-hero-desc{font-size:13px}
+  .ref-hero-icon{width:48px;height:48px}
+  .ref-link-card{padding:20px 14px}
+  .ref-stat-value{font-size:22px}
+  .ref-stat-item{padding:14px 10px}
+  .ref-reward-amount{font-size:20px}
+  .ref-reward-card{padding:12px}
+  .ref-share-btn{padding:8px 14px;font-size:11px}
+  .ref-step{padding:12px 16px;min-width:80px}
+  .ref-step-num{width:30px;height:30px;font-size:13px}
+}

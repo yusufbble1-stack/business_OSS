@@ -41,7 +41,19 @@ export function renderHomepage() {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
         </div>
+        <div class="hp-mobile-nav" id="hp-mobile-nav">
+          <a href="#/home">Home</a>
+          <a href="#/pricing">Pricing</a>
+          <a href="#/credits">Credits</a>
+          <a href="#/network">Network</a>
+          <a href="#/gains">Calculator</a>
+          <div class="hp-mobile-nav-actions">
+            <a href="mailto:asperformance.contact@gmail.com" class="hp-nav-cta">Contact Us</a>
+            <a href="#/login" class="hp-nav-login">Partner Login</a>
+          </div>
+        </div>
       </nav>
+      <div class="hp-mobile-backdrop" id="hp-mobile-backdrop"></div>
 
       <!-- Hero — Cinematic Full-Bleed with BMW Headlights BG -->
       <section class="hp-hero" id="hp-hero-showcase">
@@ -558,13 +570,37 @@ function animateStats() {
 }
 
 function initHomepageEvents() {
+  // === Mobile Nav Toggle ===
   const toggle = document.getElementById('hp-mobile-toggle');
-  const links = document.querySelector('.hp-nav-links');
-  if (toggle && links) {
+  const mobileNav = document.getElementById('hp-mobile-nav');
+  const backdrop = document.getElementById('hp-mobile-backdrop');
+
+  if (toggle && mobileNav) {
+    const closeMobileNav = () => {
+      mobileNav.classList.remove('hp-mobile-open');
+      if (backdrop) backdrop.classList.remove('visible');
+      document.body.style.overflow = '';
+    };
+    const openMobileNav = () => {
+      mobileNav.classList.add('hp-mobile-open');
+      if (backdrop) backdrop.classList.add('visible');
+      document.body.style.overflow = 'hidden';
+    };
+
     toggle.addEventListener('click', () => {
-      links.classList.toggle('hp-mobile-open');
+      if (mobileNav.classList.contains('hp-mobile-open')) closeMobileNav();
+      else openMobileNav();
     });
+
+    // Close nav when clicking a link
+    mobileNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMobileNav);
+    });
+
+    // Close nav when clicking backdrop
+    if (backdrop) backdrop.addEventListener('click', closeMobileNav);
   }
+
   // === Navbar scroll effect ===
   const nav = document.querySelector('.hp-nav');
   if (nav) {
