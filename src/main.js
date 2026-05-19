@@ -95,6 +95,22 @@ registerRoute('/settings', withAuth(renderSettingsPage));
 const PUBLIC_ROUTES = ['/home', '/network', '/pricing', '/credits', '/gains', '/tools', '/ecus', '/categories', '/login'];
 
 async function init() {
+  // Handle Supabase OAuth callback (Google redirects back with tokens in URL)
+  const fullUrl = window.location.href;
+  if (fullUrl.includes('access_token=') || fullUrl.includes('code=')) {
+    // Supabase will automatically pick up the tokens from the URL
+    // Wait for the auth state to settle
+    const { supabase } = await import('./lib/supabase.js');
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      // Clean the URL and go to dashboard
+      window.location.hash = '#/dashboard';
+      window.location.search = '';
+      // Small delay to let Supabase fully process the session
+      await new Promise(r => setTimeout(r, 300));
+    }
+  }
+
   const user = await initCurrentUser();
   const hash = window.location.hash.slice(1) || '';
   const isPublic = PUBLIC_ROUTES.some(r => hash.startsWith(r));

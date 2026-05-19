@@ -51,33 +51,24 @@ export async function signUp(email, password, fullName) {
 }
 
 /**
- * Sign in with Google using the credential JWT from Google Identity Services.
+ * Sign in with Google using standard Supabase OAuth redirect.
+ * This skips the finicky Google Identity Services script and works everywhere.
  */
-export async function signInWithGoogle(credentialResponse, nonce) {
+export async function signInWithGoogle() {
   if (isDemoMode) {
     throw new Error('Demo mode is disabled. Please connect to Supabase.');
   }
 
   try {
-    const { data, error } = await supabase.auth.signInWithIdToken({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      token: credentialResponse.credential,
-      nonce: nonce,
+      options: {
+        redirectTo: window.location.origin + '/#/dashboard'
+      }
     });
     
     if (error) throw error;
-
-    // The database trigger automatically creates the profile on first signup.
-    // We just fetch it here.
-    const profile = await getProfile(data.user.id);
-    
-    if (!profile.is_active) {
-      await supabase.auth.signOut();
-      throw new Error('Account is deactivated');
-    }
-    
-    currentUser = profile;
-    return currentUser;
+    // Page will redirect to Google here
   } catch (err) {
     console.error('[Auth] Google sign-in failed:', err);
     throw new Error('Google sign-in failed. Please try again.');
