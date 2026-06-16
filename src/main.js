@@ -95,29 +95,74 @@ registerRoute('/settings', withAuth(renderSettingsPage));
 const PUBLIC_ROUTES = ['/home', '/network', '/pricing', '/credits', '/gains', '/tools', '/ecus', '/categories', '/login'];
 
 async function init() {
-  // Handle Supabase OAuth callback (Google redirects back with tokens in URL)
   const fullUrl = window.location.href;
-  if (fullUrl.includes('access_token=') || fullUrl.includes('code=')) {
-    // Supabase will automatically pick up the tokens from the URL
-    // Wait for the auth state to settle
-    const { supabase } = await import('./lib/supabase.js');
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-      // Clean the URL and go to dashboard
-      window.location.hash = '#/dashboard';
-      window.location.search = '';
-      // Small delay to let Supabase fully process the session
-      await new Promise(r => setTimeout(r, 300));
+
+  // Handle OAuth error callbacks gracefully
+  if (fullUrl.includes('error=')) {
+    const urlObj = new URL(fullUrl);
+    let errorDescription = '';
+    
+    // Check hash first (Supabase OAuth format)
+    const hashParams = new URLSearchParams(urlObj.hash.slice(1));
+    if (hashParams.has('error_description')) {
+      errorDescription = hashParams.get('error_description');
+    } else if (hashParams.has('error')) {
+      errorDescription = hashParams.get('error');
+    }
+    
+    // Check search if not in hash
+    if (!errorDescription && urlObj.searchParams) {
+      errorDescription = urlObj.searchParams.get('error_description') || urlObj.searchParams.get('error') || '';
+    }
+    
+    if (errorDescription) {
+      console.error('[Auth OAuth Error]', errorDescription);
+      sessionStorage.setItem('auth_error', errorDescription);
+      
+      // Navigate to login page clean
+      window.location.hash = '#/login';
+      if (window.location.search) {
+        window.location.search = '';
+      } else {
+        window.location.reload();
+      }
+      return;
     }
   }
 
+  // Handle Supabase OAuth callback (Google redirects back with tokens in URL)
+  let isCallback = false;
+  if (fullUrl.includes('access_token=') || fullUrl.includes('code=')) {
+    isCallback = true;
+  }
+
+  // Load user session securely while tokens are still present in URL hash
   const user = await initCurrentUser();
+
+  if (isCallback && user) {
+    // Clean the URL and go to dashboard securely
+    window.location.hash = '#/dashboard';
+    if (window.location.search) {
+      window.location.search = '';
+      return; // Browser will reload clean
+    }
+  } else if (isCallback && !user) {
+    // Callback failed! Clean the URL and redirect to login to show the error
+    window.location.hash = '#/login';
+    if (window.location.search) {
+      window.location.search = '';
+    } else {
+      window.location.reload();
+    }
+    return;
+  }
+
   const hash = window.location.hash.slice(1) || '';
   const isPublic = PUBLIC_ROUTES.some(r => hash.startsWith(r));
 
   if (!user && !isPublic) {
     navigate('/home');
-  } else if (user && (!hash || hash === '/' || hash === '')) {
+  } else if (user && (!hash || hash === '/' || hash === '' || hash.startsWith('/login') || hash.startsWith('/home'))) {
     navigate('/dashboard');
   }
   startRouter();

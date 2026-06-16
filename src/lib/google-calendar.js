@@ -1,5 +1,6 @@
 // ===== Google Calendar Integration =====
 // Uses Google Calendar API v3 with OAuth2 for browser-side auth
+import { t } from './i18n.js';
 
 const GOOGLE_CLIENT_ID = localStorage.getItem('asp_gcal_client_id') || '';
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
@@ -132,13 +133,13 @@ export async function syncEventsToGoogleCalendar(events) {
     const gcalEvent = {
       summary: `🔧 ${ev.carName} — ${ev.title}`,
       description: [
-        `Service: ${ev.service}`,
-        `Status: ${ev.status}`,
-        `Priority: ${ev.priority}`,
-        `Customer: ${ev.customerName}`,
-        ev.techName ? `Technician: ${ev.techName}` : '',
-        ev.plate ? `Plate: ${ev.plate}` : '',
-        ev.price ? `Price: €${ev.price}` : '',
+        `${t('service')}: ${ev.service}`,
+        `${t('status')}: ${ev.status}`,
+        `${t('priority')}: ${ev.priority}`,
+        `${t('client')}: ${ev.customerName}`,
+        ev.techName ? `${t('technician')}: ${ev.techName}` : '',
+        ev.plate ? `${t('plate_number')}: ${ev.plate}` : '',
+        ev.price ? `${t('price')}: €${ev.price}` : '',
         ev.description || '',
         '',
         '— ASPerformance Business OS',

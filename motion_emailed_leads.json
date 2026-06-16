@@ -1,0 +1,72 @@
+{
+  "hello@evolvebeauty.co.uk": {
+    "company": "Evolve Organic Beauty",
+    "timestamp": "2026-06-16T16:46:38.776Z",
+    "status": "SUCCESS"
+  },
+  "hello@upcirclebeauty.com": {
+    "company": "UpCircle Beauty",
+    "timestamp": "2026-06-16T16:46:44.960Z",
+    "status": "SUCCESS"
+  },
+  "support@paiskincare.com": {
+    "company": "Pai Skincare",
+    "timestamp": "2026-06-16T16:46:51.772Z",
+    "status": "SUCCESS"
+  },
+  "sales@votary.co.uk": {
+    "company": "Votary",
+    "timestamp": "2026-06-16T16:46:59.782Z",
+    "status": "SUCCESS"
+  },
+  "hello@bohemefragrances.com": {
+    "company": "Boheme Fragrances",
+    "timestamp": "2026-06-16T16:47:06.603Z",
+    "status": "SUCCESS"
+  },
+  "contact@antiquecandleco.com": {
+    "company": "Antique Candle Co",
+    "timestamp": "2026-06-16T16:47:16.081Z",
+    "status": "SUCCESS"
+  },
+  "info@skyecandles.co.uk": {
+    "company": "Isle of Skye Candle Company",
+    "timestamp": "2026-06-16T16:47:24.037Z",
+    "status": "SUCCESS"
+  },
+  "help@devonwick.com": {
+    "company": "Devon Wick",
+    "timestamp": "2026-06-16T16:47:36.947Z",
+    "status": "SUCCESS"
+  },
+  "info@origincoffee.co.uk": {
+    "company": "Origin Coffee Roasters",
+    "timestamp": "2026-06-16T16:47:45.530Z",
+    "status": "SUCCESS"
+  },
+  "info@squaremilecoffee.com": {
+    "company": "Square Mile Coffee Roasters",
+    "timestamp": "2026-06-16T16:47:54.442Z",
+    "status": "SUCCESS"
+  },
+  "ahoy@pactcoffee.com": {
+    "company": "Pact Coffee",
+    "timestamp": "2026-06-16T16:48:03.248Z",
+    "status": "SUCCESS"
+  },
+  "care@gruns.co": {
+    "company": "Grüns",
+    "timestamp": "2026-06-16T16:48:10.728Z",
+    "status": "SUCCESS"
+  },
+  "info@asapothecary.co.uk": {
+    "company": "A.S. Apothecary",
+    "timestamp": "2026-06-16T16:48:19.734Z",
+    "status": "SUCCESS"
+  },
+  "info@freyaandbailey.com": {
+    "company": "Freya + Bailey Skincare",
+    "timestamp": "2026-06-16T16:48:26.711Z",
+    "status": "SUCCESS"
+  }
+}

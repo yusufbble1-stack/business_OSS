@@ -63,7 +63,7 @@ export async function signInWithGoogle() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin + '/#/dashboard'
+        redirectTo: window.location.origin
       }
     });
     
@@ -71,7 +71,7 @@ export async function signInWithGoogle() {
     // Page will redirect to Google here
   } catch (err) {
     console.error('[Auth] Google sign-in failed:', err);
-    throw new Error('Google sign-in failed. Please try again.');
+    throw new Error(err.message || 'Google sign-in failed. Please try again.');
   }
 }
 
@@ -92,6 +92,16 @@ export async function initCurrentUser() {
   if (isDemoMode) return null;
 
   try {
+    // If it's an OAuth callback, wait for Supabase to parse the URL hash and establish the session
+    const fullUrl = window.location.href;
+    if (fullUrl.includes('access_token=') || fullUrl.includes('code=') || fullUrl.includes('id_token=')) {
+      for (let i = 0; i < 20; i++) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) break;
+        await new Promise(r => setTimeout(r, 100));
+      }
+    }
+
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user) return null;
     
@@ -99,6 +109,10 @@ export async function initCurrentUser() {
     return currentUser;
   } catch (err) {
     console.error('[Auth] Error initializing user:', err);
+    const fullUrl = window.location.href;
+    if (fullUrl.includes('access_token=') || fullUrl.includes('code=') || fullUrl.includes('id_token=')) {
+      sessionStorage.setItem('auth_error', err.message || 'Failed to initialize user session.');
+    }
     return null;
   }
 }

@@ -1,5 +1,6 @@
 // ===== Network / Partner Locations Page — 3D Globe =====
 import Globe from 'globe.gl';
+import { getLang, setLang, t } from '../lib/i18n.js';
 import { PARTNERS, COUNTRY_FLAGS, PARTNER_COUNT, COUNTRY_COUNT } from '../data/partners.js';
 
 // Region groupings for filter bar
@@ -90,32 +91,40 @@ export function renderNetworkPage() {
             </div>
           </a>
           <div class="hp-nav-pill">
-            <a href="#/home" class="hp-nav-link">Home</a>
-            <a href="#/pricing" class="hp-nav-link">Pricing</a>
-            <a href="#/credits" class="hp-nav-link">Credits</a>
-            <a href="#/network" class="hp-nav-link active">Network</a>
-            <a href="#/gains" class="hp-nav-link">Calculator</a>
+            <a href="#/home" class="hp-nav-link">${t('home')}</a>
+            <a href="#/pricing" class="hp-nav-link">${t('pricing')}</a>
+            <a href="#/credits" class="hp-nav-link">${t('credits')}</a>
+            <a href="#/network" class="hp-nav-link active">${t('network')}</a>
+            <a href="#/gains" class="hp-nav-link">${t('calculator')}</a>
           </div>
           <div class="hp-nav-actions">
+            <button id="lang-switch-public" class="hp-lang-switch">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              ${getLang() === 'fr' ? 'FR' : 'EN'}
+            </button>
             <a href="mailto:asperformance.contact@gmail.com" class="hp-nav-cta">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              Contact Us
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              ${t('contact_us')}
             </a>
-            <a href="#/login" class="hp-nav-login">Partner Login</a>
+            <a href="#/login" class="hp-nav-login">${t('partner_login')}</a>
           </div>
           <button class="hp-mobile-toggle" id="hp-mobile-toggle">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
         </div>
         <div class="hp-mobile-nav" id="hp-mobile-nav">
-          <a href="#/home">Home</a>
-          <a href="#/pricing">Pricing</a>
-          <a href="#/credits">Credits</a>
-          <a href="#/network">Network</a>
-          <a href="#/gains">Calculator</a>
+          <a href="#/home">${t('home')}</a>
+          <a href="#/pricing">${t('pricing')}</a>
+          <a href="#/credits">${t('credits')}</a>
+          <a href="#/network">${t('network')}</a>
+          <a href="#/gains">${t('calculator')}</a>
           <div class="hp-mobile-nav-actions">
-            <a href="mailto:asperformance.contact@gmail.com" class="hp-nav-cta">Contact Us</a>
-            <a href="#/login" class="hp-nav-login">Partner Login</a>
+            <button id="lang-switch-mobile" class="hp-lang-switch hp-lang-switch--mobile">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              ${getLang() === 'fr' ? 'FR' : 'EN'}
+            </button>
+            <a href="mailto:asperformance.contact@gmail.com" class="hp-nav-cta">${t('contact_us')}</a>
+            <a href="#/login" class="hp-nav-login">${t('partner_login')}</a>
           </div>
         </div>
       </nav>
@@ -124,13 +133,13 @@ export function renderNetworkPage() {
       <!-- Network Hero -->
       <section class="nw-hero">
         <div class="nw-hero-content">
-          <span class="hp-section-tag">Partner Network</span>
-          <h1>Find a Certified <span class="hp-text-red">Partner</span> Near You</h1>
-          <p>Our growing network of professional tuning partners ensures expert service close to your location.</p>
+          <span class="hp-section-tag">${t('partner_locations')}</span>
+          <h1>${getLang() === 'fr' ? 'Trouver un <span class="hp-text-red">Partenaire</span> Agréé' : 'Find a Certified <span class="hp-text-red">Partner</span> Near You'}</h1>
+          <p>${t('globe_sub')}</p>
           <div class="nw-hero-stats">
             <div class="nw-mini-stat"><strong>${PARTNER_COUNT}+</strong><span>Locations</span></div>
-            <div class="nw-mini-stat"><strong>${COUNTRY_COUNT}</strong><span>Countries</span></div>
-            <div class="nw-mini-stat"><strong>100%</strong><span>Certified</span></div>
+            <div class="nw-mini-stat"><strong>${COUNTRY_COUNT}</strong><span>${t('countries')}</span></div>
+            <div class="nw-mini-stat"><strong>100%</strong><span>${getLang() === 'fr' ? 'Agréé' : 'Certified'}</span></div>
           </div>
         </div>
       </section>
@@ -395,6 +404,25 @@ function initNetworkEvents() {
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
   document.querySelectorAll('.nw-scroll-reveal').forEach(el => revealObserver.observe(el));
+
+  // === Language Switcher ===
+  const langSwitchPublic = document.getElementById('lang-switch-public');
+  if (langSwitchPublic) {
+    langSwitchPublic.addEventListener('click', (e) => {
+      e.preventDefault();
+      const nextLang = getLang() === 'en' ? 'fr' : 'en';
+      setLang(nextLang);
+    });
+  }
+
+  const langSwitchMobile = document.getElementById('lang-switch-mobile');
+  if (langSwitchMobile) {
+    langSwitchMobile.addEventListener('click', (e) => {
+      e.preventDefault();
+      const nextLang = getLang() === 'en' ? 'fr' : 'en';
+      setLang(nextLang);
+    });
+  }
 
   // Mobile menu
   const toggle = document.getElementById('hp-mobile-toggle');

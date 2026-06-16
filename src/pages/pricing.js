@@ -1,4 +1,22 @@
 // ===== Pricing Page =====
+import { getLang, setLang, t } from '../lib/i18n.js';
+
+function getTranslatedCategoryTitle(title) {
+  const map = {
+    'Performance Calibration': t('perf_calib'),
+    'Performance Packs': getLang() === 'fr' ? 'Packs Performance' : 'Performance Packs',
+    'Advanced Performance Features': getLang() === 'fr' ? 'Fonctionnalités Performance Avancées' : 'Advanced Performance Features',
+    'Emission Control Solutions': getLang() === 'fr' ? 'Solutions de Contrôle des Émissions' : 'Emission Control Solutions',
+    'FlexFuel / E85': getLang() === 'fr' ? 'FlexFuel / E85' : 'FlexFuel / E85',
+    'Acoustic Calibration': getLang() === 'fr' ? 'Calibration Acoustique' : 'Acoustic Calibration',
+    'ECU Management': getLang() === 'fr' ? 'Gestion ECU' : 'ECU Management',
+    'Diagnostic & Support': getLang() === 'fr' ? 'Diagnostic & Support' : 'Diagnostic & Support',
+    'Gearbox / TCU': getLang() === 'fr' ? 'Boîte de vitesses / TCU' : 'Gearbox / TCU',
+    'Truck / Agri / Heavy Duty': getLang() === 'fr' ? 'Poids Lourds / Agricole / Travaux Publics' : 'Truck / Agri / Heavy Duty',
+    'Motorsport / Premium': getLang() === 'fr' ? 'Motorsport / Premium' : 'Motorsport / Premium'
+  };
+  return map[title] || title;
+}
 
 const PRICING_CATEGORIES = [
   {
@@ -175,32 +193,40 @@ export function renderPricingPage() {
             </div>
           </a>
           <div class="hp-nav-pill">
-            <a href="#/home" class="hp-nav-link">Home</a>
-            <a href="#/pricing" class="hp-nav-link active">Pricing</a>
-            <a href="#/credits" class="hp-nav-link">Credits</a>
-            <a href="#/network" class="hp-nav-link">Network</a>
-            <a href="#/gains" class="hp-nav-link">Calculator</a>
+            <a href="#/home" class="hp-nav-link">${t('home')}</a>
+            <a href="#/pricing" class="hp-nav-link active">${t('pricing')}</a>
+            <a href="#/credits" class="hp-nav-link">${t('credits')}</a>
+            <a href="#/network" class="hp-nav-link">${t('network')}</a>
+            <a href="#/gains" class="hp-nav-link">${t('calculator')}</a>
           </div>
           <div class="hp-nav-actions">
+            <button id="lang-switch-public" class="hp-lang-switch">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              ${getLang() === 'fr' ? 'FR' : 'EN'}
+            </button>
             <a href="mailto:asperformance.contact@gmail.com" class="hp-nav-cta">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              Contact Us
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              ${t('contact_us')}
             </a>
-            <a href="#/login" class="hp-nav-login">Partner Login</a>
+            <a href="#/login" class="hp-nav-login">${t('partner_login')}</a>
           </div>
           <button class="hp-mobile-toggle" id="hp-mobile-toggle">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
         </div>
         <div class="hp-mobile-nav" id="hp-mobile-nav">
-          <a href="#/home">Home</a>
-          <a href="#/pricing">Pricing</a>
-          <a href="#/credits">Credits</a>
-          <a href="#/network">Network</a>
-          <a href="#/gains">Calculator</a>
+          <a href="#/home">${t('home')}</a>
+          <a href="#/pricing">${t('pricing')}</a>
+          <a href="#/credits">${t('credits')}</a>
+          <a href="#/network">${t('network')}</a>
+          <a href="#/gains">${t('calculator')}</a>
           <div class="hp-mobile-nav-actions">
-            <a href="mailto:asperformance.contact@gmail.com" class="hp-nav-cta">Contact Us</a>
-            <a href="#/login" class="hp-nav-login">Partner Login</a>
+            <button id="lang-switch-mobile" class="hp-lang-switch hp-lang-switch--mobile">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              ${getLang() === 'fr' ? 'FR' : 'EN'}
+            </button>
+            <a href="mailto:asperformance.contact@gmail.com" class="hp-nav-cta">${t('contact_us')}</a>
+            <a href="#/login" class="hp-nav-login">${t('partner_login')}</a>
           </div>
         </div>
       </nav>
@@ -209,9 +235,9 @@ export function renderPricingPage() {
       <!-- Pricing Hero -->
       <section class="pr-hero">
         <div class="pr-hero-content">
-          <span class="hp-section-tag">Transparent Pricing</span>
-          <h1>Professional Tuning,<br/><span class="hp-text-red">Clear Pricing</span></h1>
-          <p>All prices shown are starting rates. Complex projects may vary. Contact us for custom quotes.</p>
+          <span class="hp-section-tag">${t('transparent_pricing')}</span>
+          <h1>${t('professional_tuning')},<br/><span class="hp-text-red">${t('clear_pricing')}</span></h1>
+          <p>${t('pricing_subtitle')}</p>
         </div>
       </section>
 
@@ -223,21 +249,21 @@ export function renderPricingPage() {
               <div class="pr-card ${cat.featured ? 'pr-card-featured' : ''}">
                 <div class="pr-card-header">
                   <div class="pr-card-icon">${cat.icon}</div>
-                  <h3>${cat.title}</h3>
+                  <h3>${getTranslatedCategoryTitle(cat.title)}</h3>
                 </div>
                 <div class="pr-card-body">
                   ${cat.items.map(item => `
                     <div class="pr-item">
                       <span class="pr-item-name">${item.name}</span>
                       <span class="pr-item-dots"></span>
-                      <span class="pr-item-price ${item.price === 'SUR DEVIS' ? 'pr-price-custom' : ''}">${item.price === 'SUR DEVIS' ? 'SUR DEVIS' : 'dès ' + item.price}</span>
+                      <span class="pr-item-price ${item.price === 'SUR DEVIS' ? 'pr-price-custom' : ''}">${item.price === 'SUR DEVIS' ? t('sur_devis') : (getLang() === 'fr' ? 'dès ' : 'from ') + item.price}</span>
                     </div>
                   `).join('')}
                   ${cat.highlight ? `
                     <div class="pr-highlight">
                       <div class="pr-highlight-header">
-                        <span class="pr-highlight-name">${cat.highlight.name}</span>
-                        <span class="pr-highlight-price">dès ${cat.highlight.price}</span>
+                        <span class="pr-highlight-name">${cat.highlight.name === 'Reliability Pack' ? (getLang() === 'fr' ? 'Pack Fiabilité' : 'Reliability Pack') : cat.highlight.name}</span>
+                        <span class="pr-highlight-price">${getLang() === 'fr' ? 'dès' : 'from'} ${cat.highlight.price}</span>
                       </div>
                       <span class="pr-highlight-desc">${cat.highlight.desc}</span>
                     </div>
@@ -252,14 +278,14 @@ export function renderPricingPage() {
             <div class="pr-additional-header">
               <h3>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
-                Additional Services
+                ${t('additional_services')}
               </h3>
             </div>
             <div class="pr-additional-grid">
               ${ADDITIONAL_SERVICES.map(s => `
                 <div class="pr-add-item">
-                  <span>${s.name}</span>
-                  <span class="pr-add-price ${s.price === 'SUR DEVIS' ? 'pr-price-custom' : ''}">${s.price === 'SUR DEVIS' ? 'SUR DEVIS' : 'dès ' + s.price}</span>
+                  <span>${s.name === 'OEM Style Burble' ? t('oem_style') : s.name}</span>
+                  <span class="pr-add-price ${s.price === 'SUR DEVIS' ? 'pr-price-custom' : ''}">${s.price === 'SUR DEVIS' ? t('sur_devis') : (getLang() === 'fr' ? 'dès ' : 'from ') + s.price}</span>
                 </div>
               `).join('')}
             </div>
@@ -273,7 +299,7 @@ export function renderPricingPage() {
             </div>
             <div class="pr-contact-item">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-              <span>WhatsApp — Contact direct disponible</span>
+              <span>${t('whatsapp_direct')}</span>
             </div>
           </div>
         </div>
@@ -318,5 +344,24 @@ export function renderPricingPage() {
     });
 
     if (backdrop) backdrop.addEventListener('click', closeMobileNav);
+  }
+
+  // === Language Switcher ===
+  const langSwitchPublic = document.getElementById('lang-switch-public');
+  if (langSwitchPublic) {
+    langSwitchPublic.addEventListener('click', (e) => {
+      e.preventDefault();
+      const nextLang = getLang() === 'en' ? 'fr' : 'en';
+      setLang(nextLang);
+    });
+  }
+
+  const langSwitchMobile = document.getElementById('lang-switch-mobile');
+  if (langSwitchMobile) {
+    langSwitchMobile.addEventListener('click', (e) => {
+      e.preventDefault();
+      const nextLang = getLang() === 'en' ? 'fr' : 'en';
+      setLang(nextLang);
+    });
   }
 }

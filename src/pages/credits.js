@@ -2,6 +2,7 @@
 import { CREDIT_PACKS, PARTNER_PACK, SINGLE_CREDIT_PRICE, getCheckoutUrl, isPayhipConfigured, getProductKeyStatus, calculateSavings } from '../lib/payhip.js';
 import { getWalletStats } from '../lib/wallet.js';
 import { getCurrentUser, signOut, initCurrentUser } from '../lib/auth.js';
+import { getLang, setLang, t } from '../lib/i18n.js';
 
 const CHECK_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
 const ARROW_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
@@ -24,16 +25,24 @@ export async function renderCreditsPage() {
   // Nav actions
   const navActions = user ? `
     <div class="hp-nav-actions">
-      <span class="hp-nav-user-name" style="color:#ccc;font-size:13px;font-weight:500;">${user.full_name || user.email}</span>
-      <button class="hp-nav-login" id="cr-logout-btn" style="cursor:pointer;border:none;background:none;font-family:inherit;">Logout</button>
+      <button id="lang-switch-public" class="hp-lang-switch">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        ${getLang() === 'fr' ? 'FR' : 'EN'}
+      </button>
+      <span class="hp-nav-user-name" style="color:#ccc;font-size:13px;font-weight:500;margin-right:12px;">${user.full_name || user.email}</span>
+      <button class="hp-nav-login" id="cr-logout-btn" style="cursor:pointer;border:none;background:none;font-family:inherit;">${t('logout')}</button>
     </div>
   ` : `
     <div class="hp-nav-actions">
+      <button id="lang-switch-public" class="hp-lang-switch">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        ${getLang() === 'fr' ? 'FR' : 'EN'}
+      </button>
       <a href="mailto:asperformance.contact@gmail.com" class="hp-nav-cta">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        Contact Us
+        ${t('contact_us')}
       </a>
-      <a href="#/login" class="hp-nav-login">Sign In</a>
+      <a href="#/login" class="hp-nav-login">${t('sign_in')}</a>
     </div>
   `;
 
@@ -59,11 +68,11 @@ export async function renderCreditsPage() {
             </div>
           </a>
           <div class="hp-nav-pill">
-            <a href="#/home" class="hp-nav-link">Home</a>
-            <a href="#/pricing" class="hp-nav-link">Pricing</a>
-            <a href="#/credits" class="hp-nav-link active">Credits</a>
-            <a href="#/network" class="hp-nav-link">Network</a>
-            <a href="#/gains" class="hp-nav-link">Calculator</a>
+            <a href="#/home" class="hp-nav-link">${t('home')}</a>
+            <a href="#/pricing" class="hp-nav-link">${t('pricing')}</a>
+            <a href="#/credits" class="hp-nav-link active">${t('credits')}</a>
+            <a href="#/network" class="hp-nav-link">${t('network')}</a>
+            <a href="#/gains" class="hp-nav-link">${t('calculator')}</a>
           </div>
           ${navActions}
           <button class="hp-mobile-toggle" id="hp-mobile-toggle">
@@ -71,14 +80,18 @@ export async function renderCreditsPage() {
           </button>
         </div>
         <div class="hp-mobile-nav" id="hp-mobile-nav">
-          <a href="#/home">Home</a>
-          <a href="#/pricing">Pricing</a>
-          <a href="#/credits">Credits</a>
-          <a href="#/network">Network</a>
-          <a href="#/gains">Calculator</a>
+          <a href="#/home">${t('home')}</a>
+          <a href="#/pricing">${t('pricing')}</a>
+          <a href="#/credits">${t('credits')}</a>
+          <a href="#/network">${t('network')}</a>
+          <a href="#/gains">${t('calculator')}</a>
           <div class="hp-mobile-nav-actions">
-            <a href="mailto:asperformance.contact@gmail.com" class="hp-nav-cta">Contact Us</a>
-            <a href="#/login" class="hp-nav-login">Partner Login</a>
+            <button id="lang-switch-mobile" class="hp-lang-switch hp-lang-switch--mobile">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              ${getLang() === 'fr' ? 'FR' : 'EN'}
+            </button>
+            <a href="mailto:asperformance.contact@gmail.com" class="hp-nav-cta">${t('contact_us')}</a>
+            <a href="#/login" class="hp-nav-login">${t('partner_login')}</a>
           </div>
         </div>
       </nav>
@@ -87,9 +100,9 @@ export async function renderCreditsPage() {
       <!-- Hero Section -->
       <section class="cr-hero">
         <div class="cr-hero-particles" id="cr-particles"></div>
-        <span class="hp-section-tag">Professional Credit System</span>
+        <span class="hp-section-tag">${t('credits_headline')}</span>
         <h1>Professional Packs,<br/><span class="hp-text-red">Serious Savings</span></h1>
-        <p>Purchase credit packs to unlock lower per-file costs and priority processing. Built for garages, resellers, and professionals.</p>
+        <p>${t('credits_desc')}</p>
         <div class="cr-hero-stats">
           <div class="cr-hero-stat">
             <span class="cr-hero-stat-value">50+</span>
@@ -126,10 +139,10 @@ export async function renderCreditsPage() {
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></svg>
               </div>
               <div class="cr-wallet-info">
-                <span class="cr-wallet-label">Your Wallet Balance</span>
+                <span class="cr-wallet-label">${t('credits_balance')}</span>
                 <div class="cr-wallet-balance">
                   <span id="cr-balance-count">${stats.balance}</span>
-                  <small>credits available</small>
+                  <small>${getLang() === 'fr' ? 'crédits disponibles' : 'credits available'}</small>
                 </div>
               </div>
             </div>
@@ -172,7 +185,7 @@ export async function renderCreditsPage() {
               </div>
               <div class="cr-pack-priority">
                 ${SHIELD_SVG}
-                <span>${pack.priority} processing</span>
+                <span>${pack.priority === 'High' ? (getLang() === 'fr' ? 'Haute' : 'High') : pack.priority === 'Normal' ? (getLang() === 'fr' ? 'Normale' : 'Normal') : pack.priority} ${getLang() === 'fr' ? 'priorité' : 'priority'}</span>
               </div>
               <ul class="cr-pack-features">
                 ${pack.features.map(f => `<li>${CHECK_SVG} ${f}</li>`).join('')}
@@ -182,8 +195,8 @@ export async function renderCreditsPage() {
                  class="cr-pack-btn ${pack.featured ? 'cr-pack-btn-primary' : ''} ${pack.elite ? 'cr-pack-btn-elite' : ''} ${!user ? 'cr-pack-btn-locked' : ''}"
                  id="cr-buy-${pack.tier.toLowerCase().replace(/[\\s/]/g, '-')}"
                  data-credits="${pack.credits}">
-                ${!user ? `${LOCK_SVG} Sign In to Buy` :
-                  (getCheckoutUrl(pack.credits) !== '#' ? `Buy Now ${ARROW_SVG}` : 'Coming Soon')}
+                ${!user ? `${LOCK_SVG} ${t('sign_in')} ${getLang() === 'fr' ? 'pour acheter' : 'to Buy'}` :
+                  (getCheckoutUrl(pack.credits) !== '#' ? `${getLang() === 'fr' ? 'Acheter' : 'Buy Now'} ${ARROW_SVG}` : 'Coming Soon')}
               </a>
             </div>
           `).join('')}
@@ -382,6 +395,25 @@ export async function renderCreditsPage() {
     window.location.hash = '#/credits';
     window.location.reload();
   });
+
+  // === Language Switcher ===
+  const langSwitchPublic = document.getElementById('lang-switch-public');
+  if (langSwitchPublic) {
+    langSwitchPublic.addEventListener('click', (e) => {
+      e.preventDefault();
+      const nextLang = getLang() === 'en' ? 'fr' : 'en';
+      setLang(nextLang);
+    });
+  }
+
+  const langSwitchMobile = document.getElementById('lang-switch-mobile');
+  if (langSwitchMobile) {
+    langSwitchMobile.addEventListener('click', (e) => {
+      e.preventDefault();
+      const nextLang = getLang() === 'en' ? 'fr' : 'en';
+      setLang(nextLang);
+    });
+  }
 
   // Mobile menu
   const toggle = document.getElementById('hp-mobile-toggle');

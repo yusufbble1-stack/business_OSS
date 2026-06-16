@@ -1,6 +1,7 @@
 // Simple hash-based router
 const routes = {};
 let currentRoute = null;
+let handleRouteFn = null;
 
 export function registerRoute(path, handler) {
   routes[path] = handler;
@@ -15,6 +16,16 @@ export function getCurrentPath() {
   const hash = window.location.hash.slice(1) || '/login';
   return hash.split('?')[0];
 }
+
+export function forceReRender() {
+  currentRoute = null;
+  if (handleRouteFn) handleRouteFn();
+}
+
+// Decoupled language change listener for smooth, non-reload dynamic updates
+window.addEventListener('langchange', () => {
+  forceReRender();
+});
 
 export function startRouter() {
   const handleRoute = () => {
@@ -61,6 +72,7 @@ export function startRouter() {
     }
   };
 
+  handleRouteFn = handleRoute;
   window.addEventListener('hashchange', handleRoute);
   handleRoute();
 }

@@ -3,6 +3,7 @@ import { getCurrentUser, isAdmin, isCustomer, isTechnician } from '../lib/auth.j
 import { demoRequests, getProfileById } from '../lib/store.js';
 import { timeAgo, STATUS_LABELS } from '../lib/utils.js';
 import { icon, refreshIcons } from '../lib/icons.js';
+import { t } from '../lib/i18n.js';
 
 function parseDescription(desc) {
   if (!desc) return {};
@@ -34,12 +35,7 @@ function computeFlags(req, parsed) {
 
   if (parsed.Tool) {
     if (parsed.Tool.includes('Virtual')) flags.push('Virtual read detected');
-    if (parsed.Tool.includes('KT200') || parsed.Tool.includes('MPPS')) flags.push('Clone tool used');
-  }
-
-  if (parsed.Vehicle && parsed.Vehicle.includes('Truck')) {
-    // Currently we don't store ACM file status strictly in db, but we can flag missing if we had it
-    // flags.push('Check ACM file');
+    if (parsed.Tool.includes('KT200') || parsed.Tool.includes('MPPS') || parsed.Tool.includes('Foxflash')) flags.push('Clone tool used');
   }
 
   return flags;
@@ -61,30 +57,30 @@ export function renderRequestsPage() {
         ${renderHeader()}
         <div class="page-content">
           <div class="page-header animate-in">
-            <div><h1>Orders Dashboard</h1><p>Manage and track ECU file requests</p></div>
+            <div><h1>${t('orders_dashboard')}</h1><p>${t('manage_ecu_requests')}</p></div>
             <div class="flex gap-3 flex-wrap">
               <select id="filter-status" style="width:auto;padding:8px 32px 8px 12px">
-                <option value="">All Status</option>
+                <option value="">${t('all_status')}</option>
                 ${Object.entries(STATUS_LABELS).map(([k,v]) => `<option value="${k}">${v}</option>`).join('')}
               </select>
-              ${isCustomer() || isAdmin() ? `<a href="#/requests/new" class="btn btn-primary">${icon('plus', 16)} New Order</a>` : ''}
+              ${isCustomer() || isAdmin() ? `<a href="#/requests/new" class="btn btn-primary">${icon('plus', 16)} ${t('new_order')}</a>` : ''}
             </div>
           </div>
 
           <div class="card animate-in" style="padding:0;overflow-x:auto">
             <table id="requests-table" style="min-width:1000px">
               <thead><tr>
-                <th style="width:60px">ID</th>
-                ${isAdmin() ? '<th>Customer</th>' : ''}
-                <th>Vehicle & ECU</th>
-                <th>Services</th>
-                <th>Tool & Data</th>
-                <th>Status / Turnaround</th>
-                <th>Flags</th>
+                <th style="width:60px">${t('id')}</th>
+                ${isAdmin() ? `<th>${t('customer')}</th>` : ''}
+                <th>${t('vehicle_ecu')}</th>
+                <th>${t('services')}</th>
+                <th>${t('tool_data')}</th>
+                <th>${t('status_turnaround')}</th>
+                <th>${t('flags')}</th>
               </tr></thead>
               <tbody id="requests-tbody">${renderRequestRows(requests)}</tbody>
             </table>
-            ${!requests.length ? '<div class="empty-state"><h3>No orders found</h3><p>No mapping orders to display.</p></div>' : ''}
+            ${!requests.length ? `<div class="empty-state"><h3>${t('no_orders_found')}</h3><p>${t('no_mapping_orders')}</p></div>` : ''}
           </div>
         </div>
       </main>
@@ -110,10 +106,10 @@ function renderRequestRows(requests) {
     const parsed = parseDescription(r.description);
     const flags = computeFlags(r, parsed);
     
-    const vehicleText = parsed.Vehicle || r.title || 'Unknown Vehicle';
-    const ecuText = parsed.ECU || 'Unknown ECU';
-    const toolText = parsed.Tool || 'Unknown Tool';
-    const dtcText = parsed.DTCs || 'None';
+    const vehicleText = parsed.Vehicle || r.title || t('unknown_vehicle', {}, 'Unknown Vehicle');
+    const ecuText = parsed.ECU || t('unknown_ecu', {}, 'Unknown ECU');
+    const toolText = parsed.Tool || t('unknown_tool', {}, 'Unknown Tool');
+    const dtcText = parsed.DTCs || t('none', {}, 'None');
     
     // Turnaround time logic (simple mock)
     const dt = new Date(r.created_at);
@@ -144,14 +140,14 @@ function renderRequestRows(requests) {
         </td>
         <td>
           <div style="margin-bottom:4px"><span class="badge badge-${r.status}">${STATUS_LABELS[r.status]}</span></div>
-          <div class="text-xs ${tatClass}">${r.status === 'completed' || r.status === 'delivered' ? 'Finished' : `Waiting ${timeAgo(r.created_at)}`}</div>
+          <div class="text-xs ${tatClass}">${r.status === 'completed' || r.status === 'delivered' ? t('finished') : t('waiting_time', { time: timeAgo(r.created_at) })}</div>
         </td>
         <td>
           ${flags.length > 0 ? `
             <div style="display:flex; flex-direction:column; gap:4px">
-              ${flags.map(f => `<span class="badge badge-error" style="font-size:9px; white-space:nowrap" title="${f}">${icon('flag', 10)} Flag</span>`).join('')}
+              ${flags.map(f => `<span class="badge badge-error" style="font-size:9px; white-space:nowrap" title="${f}">${icon('flag', 10)} ${t('flag')}</span>`).join('')}
             </div>
-          ` : `<span class="text-xs" style="color:var(--status-completed)">OK</span>`}
+          ` : `<span class="text-xs" style="color:var(--status-completed)">${t('ok')}</span>`}
         </td>
       </tr>`;
   }).join('');

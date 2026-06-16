@@ -4,27 +4,28 @@ import { icon, refreshIcons } from '../lib/icons.js';
 import { avatarImg } from '../lib/avatars.js';
 import { demoRequests } from '../lib/store.js';
 import { getUnreadNotifCount, getUnreadMsgCount, renderNotifPanel, renderMsgPanel, markAllNotifsRead, markNotifRead, markMsgRead } from '../lib/notifications.js';
+import { getLang, setLang, t } from '../lib/i18n.js';
 
 function getNavItems() {
   const pendingCount = isAdmin() ? demoRequests.filter(r => r.status === 'pending').length : 0;
   const items = { menu: [], general: [] };
 
-  items.menu.push({ ic: 'layout-dashboard', label: 'Dashboard', path: '/dashboard' });
-  items.menu.push({ ic: 'clipboard-list', label: 'Requests', path: '/requests', badge: pendingCount || null });
-  if (isCustomer()) items.menu.push({ ic: 'plus-circle', label: 'New Request', path: '/requests/new' });
-  if (isAdmin()) items.menu.push({ ic: 'users', label: 'Users', path: '/users' });
-  items.menu.push({ ic: 'car', label: 'Vehicles', path: '/vehicles' });
-  if (isAdmin()) items.menu.push({ ic: 'file-text', label: 'Invoices', path: '/invoices' });
-  items.menu.push({ ic: 'calendar', label: 'Calendar', path: '/calendar' });
-  items.menu.push({ ic: 'gift', label: 'Referrals', path: '/referrals' });
-  items.menu.push({ ic: 'credit-card', label: 'Credits', path: '/credits' });
-  items.menu.push({ ic: 'gauge', label: 'Gains Calculator', path: '/gains' });
-  items.menu.push({ ic: 'cpu', label: 'ECU Database', path: '/ecus' });
-  items.menu.push({ ic: 'wrench', label: 'Tools Database', path: '/tools' });
-  items.menu.push({ ic: 'car-front', label: 'Vehicle Categories', path: '/categories' });
-  if (isAdmin()) items.menu.push({ ic: 'activity', label: 'Activity Log', path: '/activity' });
+  items.menu.push({ ic: 'layout-dashboard', label: t('dashboard'), path: '/dashboard' });
+  items.menu.push({ ic: 'clipboard-list', label: t('requests'), path: '/requests', badge: pendingCount || null });
+  if (isCustomer()) items.menu.push({ ic: 'plus-circle', label: t('new_request'), path: '/requests/new' });
+  if (isAdmin()) items.menu.push({ ic: 'users', label: t('users'), path: '/users' });
+  items.menu.push({ ic: 'car', label: t('vehicles'), path: '/vehicles' });
+  if (isAdmin()) items.menu.push({ ic: 'file-text', label: t('invoices'), path: '/invoices' });
+  items.menu.push({ ic: 'calendar', label: t('calendar'), path: '/calendar' });
+  items.menu.push({ ic: 'gift', label: t('referrals'), path: '/referrals' });
+  items.menu.push({ ic: 'credit-card', label: t('credits'), path: '/credits' });
+  items.menu.push({ ic: 'gauge', label: t('gains'), path: '/gains' });
+  items.menu.push({ ic: 'cpu', label: t('ecus'), path: '/ecus' });
+  items.menu.push({ ic: 'wrench', label: t('tools'), path: '/tools' });
+  items.menu.push({ ic: 'car-front', label: t('categories'), path: '/categories' });
+  if (isAdmin()) items.menu.push({ ic: 'activity', label: t('activity'), path: '/activity' });
 
-  items.general.push({ ic: 'settings', label: 'Settings', path: '/settings' });
+  items.general.push({ ic: 'settings', label: t('settings'), path: '/settings' });
 
   return items;
 }
@@ -66,7 +67,7 @@ export function renderSidebar() {
           `).join('')}
           <button class="sidebar-link sidebar-logout" id="btn-logout" style="border:none;background:none;cursor:pointer;width:100%;text-align:left;font-size:var(--text-sm)">
             ${icon('log-out', 18)}
-            <span>Logout</span>
+            <span>${t('logout')}</span>
           </button>
         </div>
       </nav>
@@ -87,6 +88,7 @@ export function renderHeader() {
   const user = getCurrentUser();
   const notifCount = getUnreadNotifCount(user?.id);
   const msgCount = getUnreadMsgCount(user?.id);
+  const activeLang = getLang();
 
   return `
     <header class="app-header" id="app-header">
@@ -95,11 +97,14 @@ export function renderHeader() {
       </button>
       <div class="header-search">
         <span class="header-search-icon">${icon('search', 16)}</span>
-        <input type="text" placeholder="Search requests, users..." id="header-search-input"/>
+        <input type="text" placeholder="${t('search_placeholder')}" id="header-search-input"/>
         <div class="header-search-shortcut"><kbd>⌘</kbd><kbd>F</kbd></div>
       </div>
       <div class="header-spacer"></div>
       <div class="header-actions">
+        <button class="btn btn-ghost" id="lang-switch-dashboard" style="font-size:13px;font-weight:500;display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:6px;cursor:pointer;color:var(--text-muted);border:none;background:none;">
+          ${activeLang === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN'}
+        </button>
         <div class="header-panel-wrap">
           <button class="btn btn-ghost btn-icon" id="msg-toggle-btn" style="position:relative">
             ${icon('mail', 18)}
@@ -129,6 +134,12 @@ export function initLayoutEvents() {
 
   // Logout
   document.getElementById('btn-logout')?.addEventListener('click', () => signOut());
+
+  // Language switcher toggle
+  document.getElementById('lang-switch-dashboard')?.addEventListener('click', () => {
+    const nextLang = getLang() === 'en' ? 'fr' : 'en';
+    setLang(nextLang);
+  });
 
   // Mobile sidebar toggle with backdrop
   const mobileBtn = document.getElementById('mobile-menu-btn');

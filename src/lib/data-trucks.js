@@ -105,5 +105,14 @@ export const truckData = {
         '6.7L Tector 7 280hp': { fuel:'Diesel', cc:6728, code:'F4AE', ecu:'EDC7UC31', hp:280, nm:1050, hp1:320, nm1:1200 },
       }
     }
+  },
+  Renault: {
+    'T Range': {
+      '2013+': {
+        '11L DTI 11 430hp': { fuel:'Diesel', cc:10800, code:'DTI11', ecu:'EMS3', hp:430, nm:2050, hp1:490, nm1:2300 },
+        '13L DTI 13 480hp': { fuel:'Diesel', cc:12800, code:'DTI13', ecu:'EMS3', hp:480, nm:2400, hp1:540, nm1:2700 },
+        '13L DTI 13 520hp': { fuel:'Diesel', cc:12800, code:'DTI13', ecu:'EMS3', hp:520, nm:2550, hp1:580, nm1:2850 }
+      }
+    }
   }
 };

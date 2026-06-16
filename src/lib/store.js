@@ -152,6 +152,21 @@ export async function createRequest(data) {
     service_type: data.service_type,
     priority: data.priority || 'normal',
     status: 'pending',
+    start_date: data.start_date || null,
+    finish_date: data.finish_date || null,
+    services_selected: data.services_selected || [],
+    credits_charged: data.credits_charged || 0,
+    price: data.price || 0,
+    is_paid: data.is_paid || false,
+    tool_used: data.tool_used || '',
+    read_method: data.read_method || '',
+    checksum_mode: data.checksum_mode || '',
+    dtc_codes: data.dtc_codes || '',
+    notes: data.notes || '',
+    original_file: data.original_file || '',
+    acm_file: data.acm_file || '',
+    log_file: data.log_file || '',
+    ecu_photo: data.ecu_photo || '',
   };
 
   const { data: req, error } = await supabase

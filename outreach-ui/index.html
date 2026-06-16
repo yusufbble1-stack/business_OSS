@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AS Performance — WhatsApp Outreach</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <img src="/logo.png" alt="AS Performance Logo" class="brand-logo" onerror="this.src='https://placehold.co/40x40/c41e1e/ffffff?text=AS'"/>
+        <div>
+          <h1>AS Performance</h1>
+          <p class="subtitle">WhatsApp Outreach Console</p>
+        </div>
+      </div>
+      
+      <!-- Connection Status indicator -->
+      <div class="connection-status-panel">
+        <div class="status-indicator">
+          <span class="status-dot" id="conn-status-dot"></span>
+          <span id="conn-status-label">Checking WhatsApp Server...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="outreach-container">
+      <div class="marketing-grid animate-in">
+        <!-- Sidebar: Leads List -->
+        <aside class="marketing-sidebar">
+          <div class="card leads-filter-card">
+            <div class="filter-header">
+              <h3><i data-lucide="filter" style="width:16px;height:16px;"></i> Filters</h3>
+            </div>
+            
+            <div class="form-group">
+              <input type="text" id="lead-search" placeholder="Search shop name or address..." class="input">
+            </div>
+            
+            <div class="filter-row">
+              <select id="filter-city" class="input">
+                <option value="">All Cities</option>
+              </select>
+              <select id="filter-status" class="input">
+                <option value="all">All Leads</option>
+                <option value="with_phone">With Phone</option>
+                <option value="contacted">Contacted</option>
+                <option value="pending">Pending</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Mini Stats Grid -->
+          <div class="stats-mini-grid">
+            <div class="stat-mini-card">
+              <div class="stat-mini-val" id="stat-total">0</div>
+              <div class="stat-mini-label">Total Leads</div>
+            </div>
+            <div class="stat-mini-card">
+              <div class="stat-mini-val" id="stat-phone">0</div>
+              <div class="stat-mini-label">With Phone</div>
+            </div>
+            <div class="stat-mini-card">
+              <div class="stat-mini-val" id="stat-contacted">0</div>
+              <div class="stat-mini-label">Contacted</div>
+            </div>
+          </div>
+
+          <!-- Leads Scroll list -->
+          <div class="leads-list-scroll-wrap card p-0">
+            <div class="leads-list-scroll" id="leads-list">
+              <div style="padding:40px; text-align:center; color:var(--brand-muted)">Loading leads CSV...</div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main Panel: Detail & Composer -->
+        <main class="marketing-main card p-0">
+          <div class="detail-view-container" id="detail-composer-view">
+            <div class="empty-state">
+              <i class="empty-icon" data-lucide="message-square" style="width:48px;height:48px;"></i>
+              <h3>Select a lead to begin outreach</h3>
+              <p>Configure templates and execute WhatsApp direct outreach campaigns immediately.</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Main Script -->
+  <script src="app.js"></script>
+</body>
+</html>

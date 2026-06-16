@@ -97,7 +97,7 @@ export const agriData = {
     'Arion 500': {
       '2019+': {
         '4.5L Arion 510 125hp': { fuel:'Diesel', cc:4500, code:'FPT NEF4', ecu:'Bosch EDC17C49', hp:125, nm:530, hp1:145, nm1:610 },
-        '4.5L Arion 550 155hp': { fuel:'Diesel', cc:4500, code:'FPT NEF4', ecu:'Bosch EDC17C49', hp:155, nm:640, hp1:180, nm1:735 },
+        '6.5L Arion 550 155hp': { fuel:'Diesel', cc:4500, code:'FPT NEF4', ecu:'Bosch EDC17C49', hp:155, nm:640, hp1:180, nm1:735 },
       }
     },
     'Axion 800': {
@@ -105,6 +105,49 @@ export const agriData = {
         '6.8L Axion 810 215hp': { fuel:'Diesel', cc:6788, code:'FPT NEF6', ecu:'Bosch EDC17C49', hp:215, nm:890, hp1:248, nm1:1025 },
         '6.8L Axion 830 260hp': { fuel:'Diesel', cc:6788, code:'FPT NEF6', ecu:'Bosch EDC17C49', hp:260, nm:1060, hp1:300, nm1:1220 },
         '6.8L Axion 870 295hp': { fuel:'Diesel', cc:6788, code:'FPT NEF6', ecu:'Bosch EDC17C49', hp:295, nm:1200, hp1:340, nm1:1380 },
+      }
+    }
+  },
+  Steyr: {
+    'Terrus CVT': {
+      '2016+': {
+        '6.7L 6300 Terrus 300hp': { fuel:'Diesel', cc:6728, code:'FPT NEF6', ecu:'Bosch EDC17C49', hp:300, nm:1282, hp1:345, nm1:1470 }
+      }
+    },
+    'Profi CVT': {
+      '2018+': {
+        '4.5L 4145 Profi 145hp': { fuel:'Diesel', cc:4485, code:'FPT NEF4', ecu:'Bosch EDC17C49', hp:145, nm:650, hp1:175, nm1:755 }
+      }
+    }
+  },
+  Valtra: {
+    'T Series': {
+      'T4 - 2014+': {
+        '7.4L T234 235hp': { fuel:'Diesel', cc:7400, code:'AGCO Power 74AWF', ecu:'Bosch EDC17CV52', hp:235, nm:1000, hp1:275, nm1:1160 }
+      }
+    },
+    'N Series': {
+      'N4 - 2015+': {
+        '4.9L N174 165hp': { fuel:'Diesel', cc:4900, code:'AGCO Power 49AWF', ecu:'Bosch EDC17CV52', hp:165, nm:730, hp1:195, nm1:840 }
+      }
+    }
+  },
+  Krone: {
+    'BiG X': {
+      '2018+': {
+        '11.9L BiG X 680 687hp': { fuel:'Diesel', cc:11900, code:'Liebherr D9512', ecu:'Bosch EDC17CV52', hp:687, nm:3000, hp1:770, nm1:3400 }
+      }
+    }
+  },
+  'Lamborghini Tractors': {
+    'Mach VRT': {
+      '2015+': {
+        '6.1L Mach 250 VRT 250hp': { fuel:'Diesel', cc:6057, code:'Deutz TCD 6.1', hp:250, nm:1000, hp1:290, nm1:1180 }
+      }
+    },
+    'Spark VRT': {
+      '2017+': {
+        '4.1L Spark 165 VRT 165hp': { fuel:'Diesel', cc:4038, code:'Deutz TCD 4.1', hp:165, nm:680, hp1:195, nm1:800 }
       }
     }
   }

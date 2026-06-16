@@ -1,5 +1,6 @@
 import { renderSidebar, renderHeader, initLayoutEvents } from '../components/layout.js';
 import { icon } from '../lib/icons.js';
+import { t } from '../lib/i18n.js';
 
 const ecus = [
   { name: 'EDC17C46', brand: 'Bosch', vehicles: 'VW, Audi, Skoda, Seat 2.0 TDI', protocols: ['OBD', 'Boot', 'Bench'], tools: ['Autotuner', 'KessV3', 'CMD'], services: ['Stage 1', 'Stage 2', 'DPF OFF', 'EGR OFF', 'AdBlue OFF'], note: 'OBD read is virtual — ECU ref from OBD may NOT be the real hardware. Verify with diag or check ECU label physically.' },
@@ -21,12 +22,12 @@ export function renderEcusPage() {
         <div class="page-content">
           <div class="page-header animate-in">
             <div style="flex:1">
-              <h1>Supported ECU Database</h1>
-              <p>Reference guide for ECUs, supported services, and specific tuning notes.</p>
+              <h1>${t('supported_ecu_database', {}, 'Supported ECU Database')}</h1>
+              <p>${t('supported_ecu_desc', {}, 'Reference guide for ECUs, supported services, and specific tuning notes.')}</p>
             </div>
             <div class="search-wrap">
               ${icon('search', 16)}
-              <input type="text" id="ecu-search" placeholder="Search by ECU Ref or Vehicle..." class="input" style="padding-left:36px; width:260px">
+              <input type="text" id="ecu-search" placeholder="${t('search_ecu_placeholder', {}, 'Search by ECU Ref or Vehicle...')}" class="input" style="padding-left:36px; width:260px">
             </div>
           </div>
           
@@ -34,39 +35,39 @@ export function renderEcusPage() {
             <div style="display:flex; gap:14px; align-items:flex-start">
               <div style="color:var(--brand-orange); flex-shrink:0; margin-top:2px">${icon('alert-triangle', 22)}</div>
               <div>
-                <h4 style="margin:0 0 6px 0; color:var(--brand-orange); font-size:14px">⚠️ Data Accuracy Notice — ECU Reference May Differ</h4>
+                <h4 style="margin:0 0 6px 0; color:var(--brand-orange); font-size:14px">${t('ecu_accuracy_notice_title', {}, '⚠️ Data Accuracy Notice — ECU Reference May Differ')}</h4>
                 <p style="margin:0 0 8px 0; font-size:13px; color:var(--brand-muted); line-height:1.6">
-                  The ECU references listed below are <strong style="color:#fff">generic database entries</strong> and may <strong style="color:var(--brand-orange)">not match the real ECU hardware</strong> installed in your specific vehicle. The same car model can have different ECU variants depending on production date, market, or factory updates.
+                  ${t('ecu_accuracy_notice_desc', {}, 'The ECU references listed below are generic database entries and may not match the real ECU hardware installed in your specific vehicle. The same car model can have different ECU variants depending on production date, market, or factory updates.')}
                 </p>
                 <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px">
                   <div class="badge" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:6px 12px; font-size:12px; display:flex; align-items:center; gap:6px">
-                    ${icon('search', 14)} <strong>Option 1:</strong> Run a diagnostic scan (VCDS, Delphi, Launch, etc.)
+                    ${icon('search', 14)} <strong>${t('option_1', {}, 'Option 1')}:</strong> ${t('run_diag_scan_option', {}, 'Run a diagnostic scan (VCDS, Delphi, Launch, etc.)')}
                   </div>
                   <div class="badge" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:6px 12px; font-size:12px; display:flex; align-items:center; gap:6px">
-                    ${icon('cpu', 14)} <strong>Option 2:</strong> Use your tool's "Get ID" / "Identification" function
+                    ${icon('cpu', 14)} <strong>${t('option_2', {}, 'Option 2')}:</strong> ${t('use_get_id_option', {}, 'Use your tool\'s "Get ID" / "Identification" function')}
                   </div>
                   <div class="badge" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:6px 12px; font-size:12px; display:flex; align-items:center; gap:6px">
-                    ${icon('eye', 14)} <strong>Option 3:</strong> Physically check the ECU label on the hardware
+                    ${icon('eye', 14)} <strong>${t('option_3', {}, 'Option 3')}:</strong> ${t('physically_check_option', {}, 'Physically check the ECU label on the hardware')}
                   </div>
                 </div>
                 <p style="margin:10px 0 0 0; font-size:12px; color:var(--brand-muted); opacity:0.8">
-                  Always confirm the <strong style="color:#fff">exact ECU hardware reference</strong> before placing a file service order. Sending the wrong ECU info can lead to incompatible files.
+                  ${t('confirm_ecu_hardware_warning', {}, 'Always confirm the exact ECU hardware reference before placing a file service order. Sending the wrong ECU info can lead to incompatible files.')}
                 </p>
               </div>
             </div>
           </div>
-
+ 
           <div class="card p-0 animate-in" style="animation-delay:0.15s; overflow-x: auto;">
             <table class="table" id="ecu-table" style="min-width: 1000px;">
               <thead>
                 <tr>
-                  <th>ECU Ref</th>
-                  <th>Brand</th>
-                  <th>Vehicles</th>
-                  <th>Protocols</th>
-                  <th>Tools</th>
-                  <th>Available Services</th>
-                  <th>Notes</th>
+                  <th>${t('ecu_ref', {}, 'ECU Ref')}</th>
+                  <th>${t('brand', {}, 'Brand')}</th>
+                  <th>${t('vehicles', {}, 'Vehicles')}</th>
+                  <th>${t('protocols', {}, 'Protocols')}</th>
+                  <th>${t('tools', {}, 'Tools')}</th>
+                  <th>${t('available_services', {}, 'Available Services')}</th>
+                  <th>${t('notes', {}, 'Notes')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -84,7 +85,7 @@ export function renderEcusPage() {
                     <td style="font-size:12px">
                       ${ecu.services.slice(0,3).join(', ')}${ecu.services.length > 3 ? '...' : ''}
                     </td>
-                    <td style="font-size:12px; color:var(--brand-muted); max-width: 200px;">${ecu.note}</td>
+                    <td style="font-size:12px; color:var(--brand-muted); max-width: 200px;">${t(ecu.name + '_note', {}, ecu.note)}</td>
                   </tr>
                 `).join('')}
               </tbody>

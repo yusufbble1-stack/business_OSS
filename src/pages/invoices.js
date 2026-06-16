@@ -2,11 +2,12 @@ import { renderSidebar, renderHeader, initLayoutEvents } from '../components/lay
 import { getCurrentUser } from '../lib/auth.js';
 import { demoProfiles, demoRequests, getProfileById } from '../lib/store.js';
 import { icon, refreshIcons } from '../lib/icons.js';
-import { showToast } from '../lib/utils.js';
+import { showToast, formatDate } from '../lib/utils.js';
+import { t } from '../lib/i18n.js';
 
 // In-memory invoice store
 const savedInvoices = [];
-let lineItems = [{ description: 'Stage 1 ECU Remap', qty: 1, price: 280 }];
+let lineItems = null;
 let nextInvNum = 1001;
 
 function uid() { return 'inv-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,6); }
@@ -34,7 +35,7 @@ function buildInvoicePaperHTML(data) {
         </div>
       </div>
       <div class="inv-title-block">
-        <div class="inv-title">INVOICE</div>
+        <div class="inv-title">${t('invoice')}</div>
         <div class="inv-number">#INV-${data.invoiceNum}</div>
         <div class="inv-date">${data.date}</div>
       </div>
@@ -42,19 +43,19 @@ function buildInvoicePaperHTML(data) {
 
     <div class="inv-addresses">
       <div>
-        <div class="inv-addr-label">From</div>
+        <div class="inv-addr-label">${t('from')}</div>
         <div class="inv-addr-name">AS Performance</div>
         <div class="inv-addr-line">123 Rue de la Performance<br/>75001 Paris, France<br/>+33 6 00 00 00 00<br/>admin@asperformance.com</div>
       </div>
       <div>
-        <div class="inv-addr-label">Bill To</div>
+        <div class="inv-addr-label">${t('bill_to')}</div>
         <div class="inv-addr-name">${data.clientName || '—'}</div>
         <div class="inv-addr-line">${data.clientCompany ? data.clientCompany + '<br/>' : ''}${data.clientPhone ? data.clientPhone + '<br/>' : ''}${data.clientEmail || ''}</div>
       </div>
     </div>
 
     <table class="inv-table">
-      <thead><tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Amount</th></tr></thead>
+      <thead><tr><th>${t('description')}</th><th>${t('qty')}</th><th>${t('unit_price')}</th><th>${t('amount')}</th></tr></thead>
       <tbody>
         ${data.items.map(i => `<tr>
           <td>${i.description || '—'}</td>
@@ -67,26 +68,27 @@ function buildInvoicePaperHTML(data) {
 
     <div class="inv-totals">
       <div class="inv-totals-table">
-        <div class="inv-totals-row subtotal"><span class="label">Subtotal</span><span class="value">€${subtotal.toFixed(2)}</span></div>
-        ${data.discountPct > 0 ? `<div class="inv-totals-row"><span class="label">Discount (${data.discountPct}%)</span><span class="value">-€${discount.toFixed(2)}</span></div>` : ''}
-        ${data.taxPct > 0 ? `<div class="inv-totals-row"><span class="label">Tax (${data.taxPct}%)</span><span class="value">€${tax.toFixed(2)}</span></div>` : ''}
-        <div class="inv-totals-row grand-total"><span class="label">Total</span><span class="value">€${total.toFixed(2)}</span></div>
+        <div class="inv-totals-row subtotal"><span class="label">${t('subtotal')}</span><span class="value">€${subtotal.toFixed(2)}</span></div>
+        ${data.discountPct > 0 ? `<div class="inv-totals-row"><span class="label">${t('discount')} (${data.discountPct}%)</span><span class="value">-€${discount.toFixed(2)}</span></div>` : ''}
+        ${data.taxPct > 0 ? `<div class="inv-totals-row"><span class="label">${t('tax')} (${data.taxPct}%)</span><span class="value">€${tax.toFixed(2)}</span></div>` : ''}
+        <div class="inv-totals-row grand-total"><span class="label">${t('total')}</span><span class="value">€${total.toFixed(2)}</span></div>
       </div>
     </div>
 
-    ${data.notes ? `<div class="inv-notes"><div class="inv-notes-label">Notes</div><div class="inv-notes-text">${data.notes}</div></div>` : ''}
+    ${data.notes ? `<div class="inv-notes"><div class="inv-notes-label">${t('notes')}</div><div class="inv-notes-text">${data.notes}</div></div>` : ''}
 
     <div class="inv-footer">
-      <div class="inv-footer-text">Thank you for choosing AS Performance!<br/>Payment due within 30 days. Bank transfer or cash accepted.</div>
+      <div class="inv-footer-text">${t('invoice_footer_note')}</div>
     </div>`;
 }
 
 function getFormData() {
   const clientId = document.getElementById('inv-client')?.value || '';
   const client = getProfileById(clientId);
+  const dateVal = document.getElementById('inv-date')?.value;
   return {
     invoiceNum: document.getElementById('inv-num')?.value || nextInvNum,
-    date: document.getElementById('inv-date')?.value || new Date().toLocaleDateString('en-GB'),
+    date: dateVal ? formatDate(new Date(dateVal)) : formatDate(new Date()),
     clientId,
     clientName: client?.full_name || document.getElementById('inv-client-name')?.value || '',
     clientCompany: client?.company_name || '',
@@ -130,8 +132,8 @@ function initFormEvents() {
         html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       }).from(paper).save();
-      showToast('PDF exported successfully!', 'success');
-    } catch (e) { showToast('PDF export failed: ' + e.message, 'error'); }
+      showToast(t('pdf_exported_success'), 'success');
+    } catch (e) { showToast(t('pdf_export_failed', { error: e.message }), 'error'); }
   });
 
   // WhatsApp
@@ -140,17 +142,17 @@ function initFormEvents() {
     const { total } = calcTotals(data.items, data.taxPct, data.discountPct);
     const phone = (data.clientPhone || '').replace(/[\s\-\(\)]/g, '');
     const msg = encodeURIComponent(
-      `📄 *Invoice #INV-${data.invoiceNum}*\n` +
-      `From: AS Performance\n` +
-      `To: ${data.clientName}\n` +
-      `Date: ${data.date}\n\n` +
-      data.items.map(i => `• ${i.description} (x${i.qty}) — €${(i.qty * i.price).toFixed(2)}`).join('\n') +
-      `\n\n💰 *Total: €${total.toFixed(2)}*\n\n` +
-      `Thank you for choosing AS Performance!`
+      `📄 *${t('invoice')} #INV-${data.invoiceNum}*\n` +
+      `${t('from')}: AS Performance\n` +
+      `${t('to', {}, 'To')}: ${data.clientName}\n` +
+      `${t('date', {}, 'Date')}: ${data.date}\n\n` +
+      data.items.map(i => `• ${i.description || '—'} (x${i.qty}) — €${(i.qty * i.price).toFixed(2)}`).join('\n') +
+      `\n\n💰 *${t('total')}: €${total.toFixed(2)}*\n\n` +
+      `${t('thank_you_choosing')}`
     );
     const url = phone ? `https://wa.me/${phone}?text=${msg}` : `https://wa.me/?text=${msg}`;
     window.open(url, '_blank');
-    showToast('Opening WhatsApp…', 'info');
+    showToast(t('opening_whatsapp'), 'info');
   });
 
   // Save invoice
@@ -159,7 +161,7 @@ function initFormEvents() {
     const { total } = calcTotals(data.items, data.taxPct, data.discountPct);
     savedInvoices.push({ id: uid(), ...data, total, status: 'draft', created_at: new Date().toISOString() });
     nextInvNum++;
-    showToast('Invoice saved!', 'success');
+    showToast(t('invoice_saved'), 'success');
     renderInvoicesPage();
   });
 }
@@ -169,10 +171,10 @@ function renderLineItems() {
   if (!list) return;
   list.innerHTML = lineItems.map((item, i) => `
     <div class="line-item-row" data-idx="${i}">
-      <input type="text" value="${item.description}" placeholder="Description" data-field="description" class="inv-line-input"/>
+      <input type="text" value="${item.description}" placeholder="${t('description')}" data-field="description" class="inv-line-input"/>
       <input type="number" value="${item.qty}" min="1" data-field="qty" class="inv-line-input" style="text-align:center"/>
       <input type="number" value="${item.price}" min="0" step="0.01" data-field="price" class="inv-line-input" style="text-align:right"/>
-      <button class="btn-remove-item" data-idx="${i}" title="Remove">×</button>
+      <button class="btn-remove-item" data-idx="${i}" title="${t('remove', {}, 'Remove')}">×</button>
     </div>`).join('');
 
   // Bind events
@@ -198,6 +200,10 @@ export function renderInvoicesPage() {
   const customers = getCustomers();
   const today = new Date().toISOString().split('T')[0];
 
+  if (!lineItems) {
+    lineItems = [{ description: t('stage1_ecu_remap_default', {}, 'Stage 1 ECU Remap'), qty: 1, price: 280 }];
+  }
+
   // Stats
   const totalInv = savedInvoices.length;
   const totalRevenue = savedInvoices.reduce((s, i) => s + (i.total || 0), 0);
@@ -212,27 +218,27 @@ export function renderInvoicesPage() {
         <div class="page-content">
           <div class="page-header animate-in">
             <div>
-              <h1>${icon('file-text', 28)} Invoices</h1>
-              <p>Generate, preview and send professional invoices to your clients.</p>
+              <h1>${icon('file-text', 28)} ${t('invoices')}</h1>
+              <p>${t('invoices_subtitle')}</p>
             </div>
           </div>
 
           <!-- Stats -->
           <div class="invoice-stats animate-in" style="animation-delay:0.05s">
             <div class="invoice-stat-card">
-              <div class="invoice-stat-label">Total Invoices</div>
+              <div class="invoice-stat-label">${t('total_invoices')}</div>
               <div class="invoice-stat-value">${totalInv}</div>
             </div>
             <div class="invoice-stat-card">
-              <div class="invoice-stat-label">Revenue</div>
+              <div class="invoice-stat-label">${t('revenue')}</div>
               <div class="invoice-stat-value" style="color:var(--status-completed)">€${totalRevenue.toFixed(2)}</div>
             </div>
             <div class="invoice-stat-card">
-              <div class="invoice-stat-label">Drafts</div>
+              <div class="invoice-stat-label">${t('drafts')}</div>
               <div class="invoice-stat-value" style="color:var(--status-pending)">${draftCount}</div>
             </div>
             <div class="invoice-stat-card">
-              <div class="invoice-stat-label">Paid</div>
+              <div class="invoice-stat-label">${t('paid')}</div>
               <div class="invoice-stat-value" style="color:var(--status-completed)">${paidCount}</div>
             </div>
           </div>
@@ -241,72 +247,72 @@ export function renderInvoicesPage() {
             <!-- LEFT: Form -->
             <div class="invoice-form-panel">
               <div class="form-section">
-                <div class="form-section-title">${icon('hash', 14)} Invoice Details</div>
+                <div class="form-section-title">${icon('hash', 14)} ${t('invoice_details')}</div>
                 <div class="form-row" style="margin-bottom:12px">
                   <div class="form-group">
-                    <label>Invoice #</label>
+                    <label>${t('invoice_number_label')}</label>
                     <input type="text" id="inv-num" value="${nextInvNum}" class="inv-form-input"/>
                   </div>
                   <div class="form-group">
-                    <label>Date</label>
+                    <label>${t('date', {}, 'Date')}</label>
                     <input type="date" id="inv-date" value="${today}" class="inv-form-input"/>
                   </div>
                 </div>
               </div>
 
               <div class="form-section">
-                <div class="form-section-title">${icon('user', 14)} Client</div>
+                <div class="form-section-title">${icon('user', 14)} ${t('client')}</div>
                 <div class="form-group">
-                  <label>Select Client</label>
+                  <label>${t('select_client')}</label>
                   <select id="inv-client" class="inv-form-input">
-                    <option value="">— Choose a client —</option>
+                    <option value="">— ${t('choose_client')} —</option>
                     ${customers.map(c => `<option value="${c.id}">${c.full_name}${c.company_name ? ' (' + c.company_name + ')' : ''}</option>`).join('')}
                   </select>
                 </div>
               </div>
 
               <div class="form-section">
-                <div class="form-section-title">${icon('list', 14)} Line Items</div>
+                <div class="form-section-title">${icon('list', 14)} ${t('line_items')}</div>
                 <div class="line-item-header">
-                  <span>Description</span><span>Qty</span><span>Price (€)</span><span></span>
+                  <span>${t('description')}</span><span>${t('qty')}</span><span>${t('price_euro')}</span><span></span>
                 </div>
                 <div id="line-items-list" class="line-items-list"></div>
-                <button class="btn-add-item" id="btn-add-line">${icon('plus', 14)} Add Line Item</button>
+                <button class="btn-add-item" id="btn-add-line">${icon('plus', 14)} ${t('add_line_item')}</button>
               </div>
 
               <div class="form-section">
-                <div class="form-section-title">${icon('percent', 14)} Tax & Discount</div>
+                <div class="form-section-title">${icon('percent', 14)} ${t('tax_discount')}</div>
                 <div class="extras-row">
                   <div class="form-group">
-                    <label>Tax %</label>
+                    <label>${t('tax_percent')}</label>
                     <input type="number" id="inv-tax" value="20" min="0" max="100" class="inv-form-input"/>
                   </div>
                   <div class="form-group">
-                    <label>Discount %</label>
+                    <label>${t('discount_percent')}</label>
                     <input type="number" id="inv-discount" value="0" min="0" max="100" class="inv-form-input"/>
                   </div>
                 </div>
               </div>
 
               <div class="form-section">
-                <div class="form-section-title">${icon('message-square', 14)} Notes</div>
+                <div class="form-section-title">${icon('message-square', 14)} ${t('notes')}</div>
                 <div class="form-group">
-                  <textarea id="inv-notes" class="inv-form-input" rows="3" placeholder="Payment terms, thank you note…">Payment due within 30 days.</textarea>
+                  <textarea id="inv-notes" class="inv-form-input" rows="3" placeholder="${t('notes_placeholder')}">${t('payment_due_30_days')}</textarea>
                 </div>
               </div>
 
-              <button class="btn btn-primary w-full" id="btn-save-inv" style="margin-top:8px">${icon('save', 16)} Save Invoice</button>
+              <button class="btn btn-primary w-full" id="btn-save-inv" style="margin-top:8px">${icon('save', 16)} ${t('save_invoice')}</button>
             </div>
 
             <!-- RIGHT: Preview -->
             <div class="invoice-preview-panel">
               <div class="preview-toolbar">
                 <div class="preview-toolbar-left">
-                  <h3>${icon('eye', 16)} Live Preview</h3>
+                  <h3>${icon('eye', 16)} ${t('live_preview')}</h3>
                 </div>
                 <div class="preview-toolbar-right">
                   <button class="btn btn-whatsapp btn-sm" id="btn-whatsapp">${icon('message-circle', 14)} WhatsApp</button>
-                  <button class="btn btn-primary btn-sm" id="btn-export-pdf">${icon('download', 14)} Export PDF</button>
+                  <button class="btn btn-primary btn-sm" id="btn-export-pdf">${icon('download', 14)} ${t('export_pdf')}</button>
                 </div>
               </div>
               <div class="invoice-paper-wrap">
@@ -318,20 +324,20 @@ export function renderInvoicesPage() {
           ${savedInvoices.length > 0 ? `
           <div class="card animate-in" style="margin-top:24px;padding:0;overflow:hidden;animation-delay:0.2s">
             <div class="card-header" style="padding:20px 24px 0">
-              <h3>${icon('archive', 18)} Saved Invoices</h3>
+              <h3>${icon('archive', 18)} ${t('saved_invoices')}</h3>
             </div>
             <div class="invoices-table-wrap" style="border:none;background:none">
               <table style="min-width:600px">
-                <thead><tr><th>Invoice</th><th>Client</th><th>Date</th><th>Total</th><th>Status</th></tr></thead>
+                <thead><tr><th>${t('invoice')}</th><th>${t('client')}</th><th>${t('date', {}, 'Date')}</th><th>${t('total')}</th><th>${t('status')}</th></tr></thead>
                 <tbody>
                   ${savedInvoices.map(inv => {
-                    const d = new Date(inv.created_at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+                    const d = formatDate(inv.created_at);
                     return `<tr>
                       <td class="font-semibold" style="color:#fff">#INV-${inv.invoiceNum}</td>
                       <td>${inv.clientName || '—'}</td>
                       <td class="text-muted">${d}</td>
                       <td class="font-bold" style="color:var(--status-completed)">€${(inv.total || 0).toFixed(2)}</td>
-                      <td><span class="inv-status-tag inv-status-${inv.status}">${inv.status}</span></td>
+                      <td><span class="inv-status-tag inv-status-${inv.status}">${t(inv.status)}</span></td>
                     </tr>`;
                   }).join('')}
                 </tbody>

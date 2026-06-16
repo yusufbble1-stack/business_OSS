@@ -216,3 +216,67 @@ export async function getWalletStats(userId) {
     recentTransactions: transactions,
   };
 }
+
+/**
+ * Manually adjust user credits (admin action)
+ * @param {string} userId
+ * @param {number} amount - positive to add, negative to deduct
+ * @param {string} description
+ * @returns {Object|null} transaction record
+ */
+export async function adjustCredits(userId, amount, description) {
+  if (isDemoMode) throw new Error('Demo mode disabled');
+  if (amount === 0) return null;
+
+  const type = amount > 0 ? 'credit' : 'debit';
+  const absAmount = Math.abs(amount);
+  const refId = `adj-${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
+
+  // Insert transaction
+  const { data: tx, error: txError } = await supabase
+    .from('transactions')
+    .insert({
+      user_id: userId,
+      type,
+      amount: absAmount,
+      description,
+      reference: 'Manual Adjustment',
+      reference_id: refId
+    })
+    .select()
+    .single();
+
+  if (txError) {
+    console.error('[Wallet] Error adjusting credits transaction:', txError);
+    throw txError;
+  }
+
+  // Update wallet
+  const currentWallet = await getWallet(userId);
+  const newBalance = currentWallet.balance + amount;
+  
+  const updates = { balance: newBalance };
+  if (amount > 0) {
+    const newTotal = currentWallet.total_purchased + amount;
+    updates.total_purchased = newTotal;
+    
+    let newPriority = currentWallet.priority;
+    if (newTotal >= 30) newPriority = 'VIP';
+    else if (newTotal >= 10) newPriority = 'High';
+    else if (newTotal >= 5) newPriority = 'Priority';
+    updates.priority = newPriority;
+  } else {
+    updates.total_used = currentWallet.total_used + absAmount;
+  }
+
+  const { error: walletError } = await supabase
+    .from('wallets')
+    .update(updates)
+    .eq('user_id', userId);
+
+  if (walletError) {
+    console.error('[Wallet] Error updating wallet balance after adjustment:', walletError);
+  }
+
+  return tx;
+}

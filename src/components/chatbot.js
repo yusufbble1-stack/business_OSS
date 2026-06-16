@@ -167,6 +167,8 @@ export function initChatbot() {
       removeTypingIndicator();
 
       if (!response.ok) {
+        const errBody = await response.text();
+        console.error('API response error:', response.status, errBody);
         throw new Error('API Error');
       }
 

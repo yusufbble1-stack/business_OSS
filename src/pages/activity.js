@@ -5,6 +5,7 @@ import { timeAgo } from '../lib/utils.js';
 import { navigate } from '../lib/router.js';
 import { icon } from '../lib/icons.js';
 import { avatarImg } from '../lib/avatars.js';
+import { t } from '../lib/i18n.js';
 
 export function renderActivityPage() {
   if (!isAdmin()) { navigate('/dashboard'); return; }
@@ -24,11 +25,11 @@ export function renderActivityPage() {
         ${renderHeader()}
         <div class="page-content">
           <div class="page-header animate-in">
-            <div><h1>Activity Log</h1><p>Track all system actions and changes.</p></div>
+            <div><h1>${t('activity_log', {}, 'Activity Log')}</h1><p>${t('activity_log_desc', {}, 'Track all system actions and changes.')}</p></div>
           </div>
           <div class="card animate-in" style="padding:0;overflow-x:auto">
             <table style="min-width:500px">
-              <thead><tr><th>User</th><th>Action</th><th>Details</th><th>Time</th></tr></thead>
+              <thead><tr><th>${t('user', {}, 'User')}</th><th>${t('action', {}, 'Action')}</th><th>${t('details', {}, 'Details')}</th><th>${t('time', {}, 'Time')}</th></tr></thead>
               <tbody>
                 ${sorted.map(a => {
                   const actor = getProfileById(a.user_id);
@@ -39,7 +40,7 @@ export function renderActivityPage() {
                       <div><span class="font-semibold text-sm" style="color:#fff">${actor?.full_name || 'System'}</span><br/><span class="badge badge-${actor?.role || 'customer'}" style="font-size:8px;padding:1px 6px">${actor?.role || ''}</span></div>
                     </div></td>
                     <td style="color:#fff" class="font-semibold text-sm">
-                      <span style="display:flex;align-items:center;gap:6px">${actIcon ? icon(actIcon[1], 14) : ''} ${a.action}</span>
+                      <span style="display:flex;align-items:center;gap:6px">${actIcon ? icon(actIcon[1], 14) : ''} ${t(a.action, {}, a.action)}</span>
                     </td>
                     <td style="color:rgba(255,255,255,0.5)" class="text-sm">${a.details?.title || a.details?.name || a.details?.to || '—'}</td>
                     <td class="text-xs" style="color:rgba(255,255,255,0.4)">${timeAgo(a.created_at)}</td>

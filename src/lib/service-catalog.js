@@ -2,40 +2,39 @@
 // Single source of truth for all services, credit costs, and metadata.
 // Used by: request-new.js (order wizard), pricing.js, wallet.js
 
-// ===== SERVICE CATEGORIES =====
 export const SERVICE_CATEGORIES = {
   performance: {
     id: 'performance',
-    title: 'Performance Calibration',
+    title: 'Performance',
     icon: 'zap',
     order: 1,
     tab: 'standard',
   },
-  emission: {
-    id: 'emission',
-    title: 'Emission / Delete',
-    icon: 'wind',
+  flexfuel: {
+    id: 'flexfuel',
+    title: 'FlexFuel',
+    icon: 'droplet',
     order: 2,
     tab: 'standard',
   },
-  acoustic: {
-    id: 'acoustic',
-    title: 'Acoustic & Features',
-    icon: 'volume-2',
+  emission: {
+    id: 'emission',
+    title: 'Emission Solutions',
+    icon: 'wind',
     order: 3,
     tab: 'standard',
-  },
-  advanced: {
-    id: 'advanced',
-    title: 'Advanced / Custom ECU',
-    icon: 'cpu',
-    order: 4,
-    tab: 'advanced',
   },
   gearbox: {
     id: 'gearbox',
     title: 'Gearbox / TCU',
     icon: 'settings',
+    order: 4,
+    tab: 'standard',
+  },
+  ecu_immo: {
+    id: 'ecu_immo',
+    title: 'ECU-IMMO',
+    icon: 'cpu',
     order: 5,
     tab: 'advanced',
   },
@@ -45,6 +44,13 @@ export const SERVICE_CATEGORIES = {
     icon: 'search',
     order: 6,
     tab: 'advanced',
+  },
+  others: {
+    id: 'others',
+    title: 'Others',
+    icon: 'more-horizontal',
+    order: 7,
+    tab: 'standard',
   },
 };
 
@@ -127,7 +133,7 @@ export const SERVICES = [
   {
     id: 'ethanol-flexfuel',
     name: 'Ethanol / FlexFuel',
-    category: 'performance',
+    category: 'flexfuel',
     credits: 4,
     price: '100€',
     description: 'E85 or flex-fuel calibration with ethanol content detection.',
@@ -139,7 +145,7 @@ export const SERVICES = [
   {
     id: 'launch-control',
     name: 'Launch Control',
-    category: 'performance',
+    category: 'others',
     credits: 3,
     price: '60€',
     description: 'Controlled launch RPM with two-step limiter for consistent launches.',
@@ -151,7 +157,7 @@ export const SERVICES = [
   {
     id: 'hardcut',
     name: 'Hardcut Limiter',
-    category: 'performance',
+    category: 'others',
     credits: 3,
     price: '55€',
     description: 'Aggressive rev limiter with ignition cut for dramatic effect.',
@@ -163,7 +169,7 @@ export const SERVICES = [
   {
     id: 'rolling-antilag',
     name: 'Rolling AntiLag',
-    category: 'performance',
+    category: 'others',
     credits: 5,
     price: '150€',
     description: 'Maintains boost pressure during gear shifts. For turbocharged vehicles.',
@@ -175,7 +181,7 @@ export const SERVICES = [
   {
     id: 'multimap',
     name: 'MultiMap Switching',
-    category: 'performance',
+    category: 'others',
     credits: 5,
     price: '120€',
     description: 'Multiple maps switchable via cruise control or pedal sequence (e.g. Stock / Eco / Sport / Race).',
@@ -287,7 +293,7 @@ export const SERVICES = [
   {
     id: 'pops-bangs',
     name: 'Pops & Bangs / Crackle Map',
-    category: 'acoustic',
+    category: 'others',
     credits: 3,
     price: '60€',
     description: 'Exhaust crackles and pops on overrun (deceleration).',
@@ -299,7 +305,7 @@ export const SERVICES = [
   {
     id: 'vmax-off',
     name: 'Vmax OFF (Speed Limiter)',
-    category: 'acoustic',
+    category: 'others',
     credits: 1,
     price: '50€',
     description: 'Removes electronic top speed limiter.',
@@ -311,7 +317,7 @@ export const SERVICES = [
   {
     id: 'start-stop-off',
     name: 'Start/Stop OFF',
-    category: 'acoustic',
+    category: 'others',
     credits: 1,
     price: '40€',
     description: 'Permanently disables automatic engine start/stop system.',
@@ -323,7 +329,7 @@ export const SERVICES = [
   {
     id: 'dtc-off',
     name: 'DTC OFF (Specific Fault Codes)',
-    category: 'acoustic',
+    category: 'others',
     credits: 1,
     price: '40€',
     description: 'Removes specific fault codes from ECU monitoring.',
@@ -335,7 +341,7 @@ export const SERVICES = [
   {
     id: 'hot-start-fix',
     name: 'Hot Start Fix',
-    category: 'acoustic',
+    category: 'others',
     credits: 1,
     price: '40€',
     description: 'Fixes difficult hot restart issues (common on modified vehicles).',
@@ -347,7 +353,7 @@ export const SERVICES = [
   {
     id: 'cold-start-fix',
     name: 'Cold Start Reduction',
-    category: 'acoustic',
+    category: 'others',
     credits: 1,
     price: '50€',
     description: 'Reduces cold start enrichment for smoother cold starts.',
@@ -361,7 +367,7 @@ export const SERVICES = [
   {
     id: 'clone-ecu',
     name: 'Clone ECU',
-    category: 'advanced',
+    category: 'ecu_immo',
     credits: 6,
     price: '100€',
     description: 'Clone one ECU to another (hardware replacement). Requires both original and donor files.',
@@ -373,7 +379,7 @@ export const SERVICES = [
   {
     id: 'clone-tcu',
     name: 'Clone TCU',
-    category: 'advanced',
+    category: 'ecu_immo',
     credits: 6,
     price: '120€',
     description: 'Clone TCU (Transmission Control Unit) to replacement hardware.',
@@ -385,7 +391,7 @@ export const SERVICES = [
   {
     id: 'eeprom-service',
     name: 'EEPROM Service',
-    category: 'advanced',
+    category: 'ecu_immo',
     credits: 6,
     price: '80€',
     description: 'EEPROM reading, writing, or repair for ECU configuration data.',
@@ -397,7 +403,7 @@ export const SERVICES = [
   {
     id: 'frf-odx',
     name: 'FRF / ODX Extraction',
-    category: 'advanced',
+    category: 'ecu_immo',
     credits: 4,
     price: '60€',
     description: 'Extract flash data from FRF/ODX container files.',
@@ -409,7 +415,7 @@ export const SERVICES = [
   {
     id: 'cvn-fix',
     name: 'CVN Fix',
-    category: 'advanced',
+    category: 'ecu_immo',
     credits: 5,
     price: '100€',
     description: 'Calibration Verification Number correction after ECU modification.',
@@ -421,7 +427,7 @@ export const SERVICES = [
   {
     id: 'recovery',
     name: 'Recovery / Unbrick ECU',
-    category: 'advanced',
+    category: 'ecu_immo',
     credits: 8,
     price: '120€',
     description: 'Emergency ECU recovery after failed flash or bricked unit.',
@@ -433,7 +439,7 @@ export const SERVICES = [
   {
     id: 'bench-unlock',
     name: 'Bench Unlock',
-    category: 'advanced',
+    category: 'ecu_immo',
     credits: 5,
     price: '80€',
     description: 'Unlock ECU for bench reading/writing capability.',
@@ -445,7 +451,7 @@ export const SERVICES = [
   {
     id: 'boot-unlock',
     name: 'Boot Unlock',
-    category: 'advanced',
+    category: 'ecu_immo',
     credits: 6,
     price: '100€',
     description: 'Unlock ECU boot mode for recovery or full read access.',
@@ -457,7 +463,7 @@ export const SERVICES = [
   {
     id: 'tprot-patch',
     name: 'TProt Patch',
-    category: 'advanced',
+    category: 'ecu_immo',
     credits: 5,
     price: '70€',
     description: 'Tuning Protection bypass for locked ECUs.',
@@ -469,7 +475,7 @@ export const SERVICES = [
   {
     id: 'vin-correction',
     name: 'VIN Correction',
-    category: 'advanced',
+    category: 'ecu_immo',
     credits: 4,
     price: '70€',
     description: 'Correct or update VIN number stored in ECU.',
@@ -481,7 +487,7 @@ export const SERVICES = [
   {
     id: 'immo-off',
     name: 'Immo OFF',
-    category: 'advanced',
+    category: 'ecu_immo',
     credits: 4,
     price: '80€',
     description: 'Disable immobilizer system in ECU.',
@@ -493,7 +499,7 @@ export const SERVICES = [
   {
     id: 'virgin-file',
     name: 'Virgin File',
-    category: 'advanced',
+    category: 'ecu_immo',
     credits: 4,
     price: '90€',
     description: 'Reset ECU to virgin/unprogrammed state for new key learning.',
@@ -505,7 +511,7 @@ export const SERVICES = [
   {
     id: 'isn-sync',
     name: 'ISN Sync',
-    category: 'advanced',
+    category: 'ecu_immo',
     credits: 5,
     price: '100€',
     description: 'Synchronize ISN between DME and CAS/FEM (BMW specific).',
@@ -679,7 +685,7 @@ export const TOOL_CHECKSUM_MAP = {
   'AMT Flex':   'auto',
   'Dfox':       'auto',
   'CMD Flash':  'auto',
-  'Foxflash':   'auto',
+  'Foxflash':   'manual',
   'PCM Flash':  'manual',
   'K-TAG':      'auto',
   'Kess V2':    'auto',

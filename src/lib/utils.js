@@ -1,4 +1,5 @@
 import { icon, refreshIcons } from './icons.js';
+import { t, getLang } from './i18n.js';
 
 // ===== TOAST SYSTEM =====
 export function showToast(message, type = 'info', duration = 3500) {
@@ -35,7 +36,7 @@ export function showModal(title, bodyHTML, buttons = []) {
       </div>
       <div class="modal-body">${bodyHTML}</div>
       ${buttons.length ? `<div class="modal-footer">
-        <button class="btn btn-secondary modal-close">Cancel</button>
+        <button class="btn btn-secondary modal-close">${t('cancel') || 'Cancel'}</button>
         ${buttons.map(b => `<button class="btn ${b.class || 'btn-primary'}" id="${b.id}">${b.label}</button>`).join('')}
       </div>` : ''}
     </div>`;
@@ -83,30 +84,49 @@ export function confirmDialog(title, message) {
 // ===== FORMATTING =====
 export function timeAgo(date) {
   const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
-  if (seconds < 60) return 'just now';
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-  if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
-  return new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  if (seconds < 60) return t('just_now');
+  if (seconds < 3600) return t('m_ago', { num: Math.floor(seconds / 60) });
+  if (seconds < 86400) return t('h_ago', { num: Math.floor(seconds / 3600) });
+  if (seconds < 604800) return t('d_ago', { num: Math.floor(seconds / 86400) });
+  const locale = getLang() === 'fr' ? 'fr-FR' : 'en-GB';
+  return new Date(date).toLocaleDateString(locale, { day: 'numeric', month: 'short' });
 }
 
 export function formatDate(date) {
-  return new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  const locale = getLang() === 'fr' ? 'fr-FR' : 'en-GB';
+  return new Date(date).toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 export function formatDateTime(date) {
-  return new Date(date).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const locale = getLang() === 'fr' ? 'fr-FR' : 'en-GB';
+  return new Date(date).toLocaleString(locale, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
 // ===== LABELS =====
-export const SERVICE_LABELS = {
+export const SERVICE_LABELS = new Proxy({
   stage1: 'Stage 1', stage2: 'Stage 2', dpf_off: 'DPF Off',
   egr_off: 'EGR Off', adblue_off: 'AdBlue Off', dtc_off: 'DTC Off', custom: 'Custom',
-};
-export const STATUS_LABELS = {
-  pending: 'Pending', assigned: 'Assigned', in_progress: 'In Progress',
+}, {
+  get(target, prop) {
+    if (prop in target) {
+      return t(prop) || target[prop];
+    }
+    return prop;
+  }
+});
+
+export const STATUS_LABELS = new Proxy({
+  pending: 'Pending', assigned: 'Confirmed', in_progress: 'In Progress',
   completed: 'Completed', delivered: 'Delivered', cancelled: 'Cancelled',
-};
+}, {
+  get(target, prop) {
+    if (prop in target) {
+      return t(prop) || target[prop];
+    }
+    return prop;
+  }
+});
+
 export const PRIORITY_COLORS = {
   low: 'var(--brand-muted)', normal: 'var(--brand-silver)', high: 'var(--status-pending)', urgent: 'var(--status-cancelled)',
 };

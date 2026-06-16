@@ -1,4 +1,6 @@
 // ===== Homepage (Public Landing Page) =====
+import { PARTNER_COUNT, COUNTRY_COUNT } from '../data/partners.js';
+import { getLang, setLang, t } from '../lib/i18n.js';
 
 export function renderHomepage() {
   const app = document.getElementById('app');
@@ -24,32 +26,40 @@ export function renderHomepage() {
             </div>
           </a>
           <div class="hp-nav-pill">
-            <a href="#/home" class="hp-nav-link active">Home</a>
-            <a href="#/pricing" class="hp-nav-link">Pricing</a>
-            <a href="#/credits" class="hp-nav-link">Credits</a>
-            <a href="#/network" class="hp-nav-link">Network</a>
-            <a href="#/gains" class="hp-nav-link">Calculator</a>
+            <a href="#/home" class="hp-nav-link active">${t('home')}</a>
+            <a href="#/pricing" class="hp-nav-link">${t('pricing')}</a>
+            <a href="#/credits" class="hp-nav-link">${t('credits')}</a>
+            <a href="#/network" class="hp-nav-link">${t('network')}</a>
+            <a href="#/gains" class="hp-nav-link">${t('calculator')}</a>
           </div>
           <div class="hp-nav-actions">
+            <button id="lang-switch-public" class="hp-lang-switch">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              ${getLang() === 'fr' ? 'FR' : 'EN'}
+            </button>
             <a href="mailto:asperformance.contact@gmail.com" class="hp-nav-cta">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              Contact Us
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              ${t('contact_us')}
             </a>
-            <a href="#/login" class="hp-nav-login">Partner Login</a>
+            <a href="#/login" class="hp-nav-login">${t('partner_login')}</a>
           </div>
           <button class="hp-mobile-toggle" id="hp-mobile-toggle">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
         </div>
         <div class="hp-mobile-nav" id="hp-mobile-nav">
-          <a href="#/home">Home</a>
-          <a href="#/pricing">Pricing</a>
-          <a href="#/credits">Credits</a>
-          <a href="#/network">Network</a>
-          <a href="#/gains">Calculator</a>
+          <a href="#/home">${t('home')}</a>
+          <a href="#/pricing">${t('pricing')}</a>
+          <a href="#/credits">${t('credits')}</a>
+          <a href="#/network">${t('network')}</a>
+          <a href="#/gains">${t('calculator')}</a>
           <div class="hp-mobile-nav-actions">
-            <a href="mailto:asperformance.contact@gmail.com" class="hp-nav-cta">Contact Us</a>
-            <a href="#/login" class="hp-nav-login">Partner Login</a>
+            <button id="lang-switch-mobile" class="hp-lang-switch hp-lang-switch--mobile">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              ${getLang() === 'fr' ? 'FR' : 'EN'}
+            </button>
+            <a href="mailto:asperformance.contact@gmail.com" class="hp-nav-cta">${t('contact_us')}</a>
+            <a href="#/login" class="hp-nav-login">${t('partner_login')}</a>
           </div>
         </div>
       </nav>
@@ -69,20 +79,20 @@ export function renderHomepage() {
           <!-- Centered Text Content — ABOVE the car (z-index 5) -->
           <div class="hp-hero-center">
             <h1 class="hp-hero-title">
-              <span class="hp-title-light">Precision</span>
-              <span class="hp-title-bold"><span class="hp-text-red">ECU</span> Mapping</span>
+              <span class="hp-title-light">${t('hero_title_light')}</span>
+              <span class="hp-title-bold"><span class="hp-text-red">${getLang() === 'fr' ? 'Cartographie' : 'ECU'}</span> ${getLang() === 'fr' ? 'ECU' : 'Mapping'}</span>
             </h1>
             <p class="hp-hero-subtitle">
-              Professional engine tuning files delivered fast.
+              ${t('hero_subtitle')}
             </p>
             <div class="hp-showcase-model-info" id="hp-showcase-model-info">
               <span class="hp-showcase-model-name">Audi RS6 Avant</span>
               <span class="hp-showcase-model-tag">Stage 1 — +85 HP</span>
             </div>
             <div class="hp-hero-btns">
-              <a href="#/gains" class="hp-btn-secondary hp-btn-outline">Check Gains</a>
+              <a href="#/gains" class="hp-btn-secondary hp-btn-outline">${t('check_gains')}</a>
               <a href="#/pricing" class="hp-btn-primary">
-                View Pricing
+                ${t('view_pricing')}
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
               </a>
             </div>
@@ -98,22 +108,22 @@ export function renderHomepage() {
         <div class="hp-hero-stats">
           <div class="hp-stat">
             <span class="hp-stat-num" data-count="500">0</span><span class="hp-stat-plus">+</span>
-            <span class="hp-stat-label">Vehicles Tuned</span>
+            <span class="hp-stat-label">${t('vehicles_tuned')}</span>
           </div>
           <div class="hp-stat-divider"></div>
           <div class="hp-stat">
-            <span class="hp-stat-num" data-count="18">0</span>
-            <span class="hp-stat-label">Partner Locations</span>
+            <span class="hp-stat-num" data-count="${PARTNER_COUNT}">0</span>
+            <span class="hp-stat-label">${t('partner_locations')}</span>
           </div>
           <div class="hp-stat-divider"></div>
           <div class="hp-stat">
-            <span class="hp-stat-num" data-count="8">0</span>
-            <span class="hp-stat-label">Countries</span>
+            <span class="hp-stat-num" data-count="${COUNTRY_COUNT}">0</span>
+            <span class="hp-stat-label">${t('countries')}</span>
           </div>
           <div class="hp-stat-divider"></div>
           <div class="hp-stat">
             <span class="hp-stat-num" data-count="99">0</span><span class="hp-stat-plus">%</span>
-            <span class="hp-stat-label">Satisfaction</span>
+            <span class="hp-stat-label">${t('satisfaction')}</span>
           </div>
         </div>
       </section>
@@ -124,9 +134,9 @@ export function renderHomepage() {
         <div class="hp-cyber-grid-overlay"></div>
         <div class="hp-container" style="position:relative;z-index:2">
           <div class="hp-section-header">
-            <span class="hp-section-tag">Our Services</span>
-            <h2>Everything You Need for<br/><span class="hp-text-red">Maximum Performance</span></h2>
-            <p>From Stage 1 ECO to full custom dyno setups, we cover every aspect of modern engine calibration.</p>
+            <span class="hp-section-tag">${t('our_services')}</span>
+            <h2>Everything You Need for<br/><span class="hp-text-red">${t('max_performance')}</span></h2>
+            <p>${t('services_desc')}</p>
           </div>
           <div class="hp-services-grid">
             <div class="hp-service-card hp-service-featured hp-cyber-card">
@@ -139,13 +149,13 @@ export function renderHomepage() {
               <div class="hp-service-icon">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
               </div>
-              <h3>Performance Calibration</h3>
-              <p>Stage 1 to Stage 4 tuning, big turbo setups, and custom dyno calibrations for maximum power gains.</p>
+              <h3>${t('perf_calib')}</h3>
+              <p>${t('perf_calib_desc')}</p>
               <ul class="hp-service-list">
-                <li>Stage 1 ECO / Daily</li>
-                <li>Stage 2 & Stage 3</li>
-                <li>Big Turbo / Hybrid</li>
-                <li>Custom Dyno Setup</li>
+                <li>${t('stage1_eco')}</li>
+                <li>${t('stage2_stage3')}</li>
+                <li>${t('big_turbo')}</li>
+                <li>${t('custom_dyno')}</li>
               </ul>
               <span class="hp-service-from">from <strong>60€</strong></span>
             </div>
@@ -315,8 +325,8 @@ export function renderHomepage() {
                     <span class="hp-cyber-dot"></span>
                     <span>NETWORK</span>
                   </div>
-                  <h4>European Coverage</h4>
-                  <p>18 certified partner locations across 8 countries. Growing network ensures service close to you.</p>
+                  <h4>Global Coverage</h4>
+                  <p>${PARTNER_COUNT} certified partner locations across ${COUNTRY_COUNT} countries. Growing network ensures service close to you.</p>
                 </div>
                 <div class="hp-cyber-accent-line"></div>
               </div>
@@ -570,6 +580,25 @@ function animateStats() {
 }
 
 function initHomepageEvents() {
+  // === Language Switcher ===
+  const langSwitchPublic = document.getElementById('lang-switch-public');
+  if (langSwitchPublic) {
+    langSwitchPublic.addEventListener('click', (e) => {
+      e.preventDefault();
+      const nextLang = getLang() === 'en' ? 'fr' : 'en';
+      setLang(nextLang);
+    });
+  }
+
+  const langSwitchMobile = document.getElementById('lang-switch-mobile');
+  if (langSwitchMobile) {
+    langSwitchMobile.addEventListener('click', (e) => {
+      e.preventDefault();
+      const nextLang = getLang() === 'en' ? 'fr' : 'en';
+      setLang(nextLang);
+    });
+  }
+
   // === Mobile Nav Toggle ===
   const toggle = document.getElementById('hp-mobile-toggle');
   const mobileNav = document.getElementById('hp-mobile-nav');

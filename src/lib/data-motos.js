@@ -143,5 +143,36 @@ export const motoData = {
         '1868cc Milwaukee-Eight 93hp': { fuel:'Gasoline', cc:1868, code:'M8-114', ecu:'Delphi', hp:93, nm:155, hp1:108, nm1:175 },
       }
     }
+  },
+  Suzuki: {
+    'GSX-R1000': {
+      '2017+': {
+        '999cc 4-Cyl 202hp': { fuel:'Gasoline', cc:999, code:'GSXR1000', ecu:'Mitsubishi', hp:202, nm:118, hp1:220, nm1:128 }
+      }
+    },
+    'Hayabusa': {
+      '2021+': {
+        '1340cc 4-Cyl 190hp': { fuel:'Gasoline', cc:1340, code:'Hayabusa3', ecu:'Mitsubishi', hp:190, nm:150, hp1:208, nm1:165 }
+      }
+    }
+  },
+  Triumph: {
+    'Street Triple 765 RS': {
+      '2020+': {
+        '765cc 3-Cyl 123hp': { fuel:'Gasoline', cc:765, code:'ST765', ecu:'Keihin', hp:123, nm:79, hp1:135, nm1:88 }
+      }
+    },
+    'Tiger 900': {
+      '2020+': {
+        '888cc 3-Cyl 95hp': { fuel:'Gasoline', cc:888, code:'T900', ecu:'Keihin', hp:95, nm:87, hp1:108, nm1:98 }
+      }
+    }
+  },
+  Aprilia: {
+    'RSV4': {
+      '2021+': {
+        '1099cc V4 217hp': { fuel:'Gasoline', cc:1099, code:'RSV4-1100', ecu:'Marelli IAW 11MP', hp:217, nm:125, hp1:235, nm1:136 }
+      }
+    }
   }
 };

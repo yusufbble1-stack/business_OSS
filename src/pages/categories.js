@@ -1,5 +1,6 @@
 import { renderSidebar, renderHeader, initLayoutEvents } from '../components/layout.js';
 import { icon } from '../lib/icons.js';
+import { t } from '../lib/i18n.js';
 
 const categories = [
   { id: 'cars', title: 'Cars & Passenger Vehicles', icon: 'car', desc: 'Standard passenger vehicles, hatchbacks, sedans, SUVs, and sports cars.', note: 'Most reads can be done via OBD, but bench reads are recommended for full backups.' },
@@ -22,8 +23,8 @@ export function renderCategoriesPage() {
         <div class="page-content">
           <div class="page-header animate-in">
             <div style="flex:1">
-              <h1>Vehicle Categories</h1>
-              <p>Select a vehicle category to see specific guidelines and start an order.</p>
+              <h1>${t('vehicle_categories', {}, 'Vehicle Categories')}</h1>
+              <p>${t('vehicle_categories_desc', {}, 'Select a vehicle category to see specific guidelines and start an order.')}</p>
             </div>
           </div>
 
@@ -31,10 +32,9 @@ export function renderCategoriesPage() {
             <div style="display:flex; gap:12px; align-items:flex-start">
               <div style="color:var(--brand-orange); flex-shrink:0; margin-top:2px">${icon('alert-triangle', 20)}</div>
               <div>
-                <h4 style="margin:0 0 6px 0; color:var(--brand-orange); font-size:13px">⚠️ Important — ECU Reference May Not Match Your Real Hardware</h4>
+                <h4 style="margin:0 0 6px 0; color:var(--brand-orange); font-size:13px">${t('verify_ecu_ref_title', {}, 'Important — ECU Reference May Not Match Your Real Hardware')}</h4>
                 <p style="margin:0; font-size:12px; color:var(--brand-muted); line-height:1.6">
-                  The ECU references in our database are <strong style="color:#fff">generic entries</strong> and may <strong style="color:var(--brand-orange)">not match the actual ECU</strong> installed in your specific vehicle. The same model can have different ECU variants depending on production date, market, or factory updates. 
-                  <strong style="color:#fff">Before ordering, always verify your real ECU</strong> by running a <strong style="color:#fff">diagnostic scan</strong> (VCDS, Delphi, Launch, etc.), using your <strong style="color:#fff">programming tool's "Get ID"</strong> function, or <strong style="color:#fff">physically checking</strong> the ECU label on the unit.
+                  ${t('verify_ecu_ref_long_desc', {}, "The ECU references in our database are generic entries and may not match the actual ECU installed in your specific vehicle. The same model can have different ECU variants depending on production date, market, or factory updates. Before ordering, always verify your real ECU by running a diagnostic scan (VCDS, Delphi, Launch, etc.), using your programming tool's \"Get ID\" function, or physically checking the ECU label on the unit.")}
                 </p>
               </div>
             </div>
@@ -48,15 +48,15 @@ export function renderCategoriesPage() {
                     ${icon(c.icon, 24)}
                   </div>
                   <div>
-                    <h3 style="margin:0 0 4px 0">${c.title}</h3>
-                    <p style="margin:0; font-size:13px; color:var(--brand-muted); line-height:1.4">${c.desc}</p>
+                    <h3 style="margin:0 0 4px 0">${t(c.id + '_title', {}, c.title)}</h3>
+                    <p style="margin:0; font-size:13px; color:var(--brand-muted); line-height:1.4">${t(c.id + '_desc', {}, c.desc)}</p>
                   </div>
                 </div>
                 <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px; font-size:12px; color:#aaa; margin-bottom:16px">
-                  <strong>Note:</strong> ${c.note}
+                  <strong>${t('note', {}, 'Note')}:</strong> ${t(c.id + '_note', {}, c.note)}
                 </div>
                 <div style="margin-top: auto;">
-                  <a href="#/requests/new?type=${c.id}" class="btn btn-primary" style="width:100%; justify-content:center">START NEW ORDER</a>
+                  <a href="#/requests/new?type=${c.id}" class="btn btn-primary" style="width:100%; justify-content:center">${t('start_new_order', {}, 'START NEW ORDER')}</a>
                 </div>
               </div>
             `).join('')}

@@ -6,16 +6,24 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "whatsapp": "node whatsapp-server.mjs"
   },
   "devDependencies": {
     "vite": "^8.0.10"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.19.2",
     "globe.gl": "^2.45.3",
     "html2pdf.js": "^0.14.0",
     "lucide": "^1.14.0",
-    "pg": "^8.20.0"
+    "nodemailer": "^9.0.0",
+    "pg": "^8.20.0",
+    "qrcode": "^1.5.4",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.26.0"
   }
 }

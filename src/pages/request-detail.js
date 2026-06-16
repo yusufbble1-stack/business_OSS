@@ -1,10 +1,11 @@
 import { renderSidebar, renderHeader, initLayoutEvents } from '../components/layout.js';
 import { getCurrentUser, isAdmin, isTechnician } from '../lib/auth.js';
 import { demoRequests, getProfileById, getVehicleById, demoProfiles, assignRequest, changeRequestStatus, sendMessage, getMessagesForRequest } from '../lib/store.js';
-import { formatDateTime, SERVICE_LABELS, STATUS_LABELS, showToast } from '../lib/utils.js';
+import { formatDateTime, SERVICE_LABELS, STATUS_LABELS, showToast, showModal } from '../lib/utils.js';
 import { icon, refreshIcons } from '../lib/icons.js';
 import { navigate } from '../lib/router.js';
 import { avatarImg } from '../lib/avatars.js';
+import { t } from '../lib/i18n.js';
 
 export function renderRequestDetail({ id }) {
   const app = document.getElementById('app');
@@ -12,7 +13,7 @@ export function renderRequestDetail({ id }) {
   const request = demoRequests.find(r => r.id === id);
 
   if (!request) {
-    app.innerHTML = `<div class="app-layout">${renderSidebar()}<main class="app-main">${renderHeader()}<div class="page-content"><div class="empty-state" style="padding:80px 20px"><h3>Request not found</h3><p>This request doesn't exist or has been removed.</p><a href="#/requests" class="btn btn-primary" style="margin-top:16px">${icon('arrow-left', 16)} Back to Requests</a></div></div></main></div>`;
+    app.innerHTML = `<div class="app-layout">${renderSidebar()}<main class="app-main">${renderHeader()}<div class="page-content"><div class="empty-state" style="padding:80px 20px"><h3>${t('request_not_found', {}, 'Request not found')}</h3><p>${t('request_not_exist', {}, "This request doesn't exist or has been removed.")}</p><a href="#/requests" class="btn btn-primary" style="margin-top:16px">${icon('arrow-left', 16)} ${t('back_to_requests', {}, 'Back to Requests')}</a></div></div></main></div>`;
     initLayoutEvents(); return;
   }
 
@@ -47,7 +48,7 @@ export function renderRequestDetail({ id }) {
         <div class="card animate-in" style="margin-bottom:20px; border:1px solid var(--status-completed); background:rgba(16,185,129,0.05)">
           <div class="card-header" style="border-bottom:1px solid rgba(16,185,129,0.2); cursor:pointer" onclick="this.parentElement.querySelector('.checklist-body').style.display = this.parentElement.querySelector('.checklist-body').style.display === 'none' ? 'block' : 'none'; this.querySelector('.chev').style.transform = this.parentElement.querySelector('.checklist-body').style.display === 'none' ? 'rotate(0deg)' : 'rotate(180deg)'">
             <h3 style="color:var(--status-completed); display:flex; align-items:center; gap:8px; margin:0">
-              ${icon('clipboard-check', 18)} POST-FLASH WORKSHOP CHECKLIST — ${cl.vehicle}
+              ${icon('clipboard-check', 18)} ${t('post_flash_checklist_header', { vehicle: cl.vehicle }, `POST-FLASH WORKSHOP CHECKLIST — ${cl.vehicle}`)}
               <span class="chev" style="margin-left:auto; transition:transform 0.2s">${icon('chevron-down', 16)}</span>
             </h3>
           </div>
@@ -166,28 +167,28 @@ export function renderRequestDetail({ id }) {
             </div>
           </div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div class="detail-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
             <div style="display:flex;flex-direction:column;gap:20px">
               <!-- Request Info -->
               <div class="card animate-in" style="animation-delay:0.1s">
-                <div class="card-header"><h3>${icon('file-text', 18)} Request Info</h3></div>
+                <div class="card-header"><h3>${icon('file-text', 18)} ${t('request_info', {}, 'Request Info')}</h3></div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-                  <div><label>Service Type</label><p class="font-semibold" style="color:#fff">${SERVICE_LABELS[request.service_type]}</p></div>
-                  <div><label>Priority</label><p style="color:var(--priority-${request.priority});font-weight:600;text-transform:uppercase">${request.priority}</p></div>
-                  <div><label>Price</label><p class="font-semibold" style="color:#fff">${request.price ? `€${request.price}` : 'TBD'}</p></div>
-                  <div><label>Payment</label><p style="color:${request.is_paid ? 'var(--status-completed)' : 'var(--status-pending)'};font-weight:600">${request.is_paid ? '✓ Paid' : '✕ Unpaid'}</p></div>
+                  <div><label>${t('service_type')}</label><p class="font-semibold" style="color:#fff">${SERVICE_LABELS[request.service_type]}</p></div>
+                  <div><label>${t('priority')}</label><p style="color:var(--priority-${request.priority});font-weight:600;text-transform:uppercase">${t(request.priority)}</p></div>
+                  <div><label>${t('price')}</label><p class="font-semibold" style="color:#fff">${request.price ? `€${request.price}` : 'TBD'}</p></div>
+                  <div><label>${t('payment', {}, 'Payment')}</label><p style="color:${request.is_paid ? 'var(--status-completed)' : 'var(--status-pending)'};font-weight:600">${request.is_paid ? `✓ ${t('paid', {}, 'Paid')}` : `✕ ${t('unpaid', {}, 'Unpaid')}`}</p></div>
                 </div>
-                <div style="margin-top:16px"><label>Description</label><p style="color:#fff">${request.description || 'No description'}</p></div>
-                <div style="margin-top:12px"><label>Created</label><p style="color:rgba(255,255,255,0.7)">${formatDateTime(request.created_at)}</p></div>
+                <div style="margin-top:16px"><label>${t('description', {}, 'Description')}</label><p style="color:#fff">${request.description || t('no_description', {}, 'No description')}</p></div>
+                <div style="margin-top:12px"><label>${t('created', {}, 'Created')}</label><p style="color:rgba(255,255,255,0.7)">${formatDateTime(request.created_at)}</p></div>
               </div>
 
               <!-- Vehicle -->
               <div class="card animate-in" style="animation-delay:0.15s">
-                <div class="card-header"><h3>${icon('car', 18)} Vehicle</h3></div>
+                <div class="card-header"><h3>${icon('car', 18)} ${t('vehicle', {}, 'Vehicle')}</h3></div>
                 ${vehicle ? `<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
                   <div style="width:48px;height:48px;border-radius:4px;background:linear-gradient(135deg,rgba(196,30,30,0.15),rgba(196,30,30,0.05));display:flex;align-items:center;justify-content:center;color:var(--brand-red-light);flex-shrink:0">${icon('car', 24)}</div>
                   <div><h4 style="color:#fff">${vehicle.make} ${vehicle.model}</h4><p class="text-sm" style="color:rgba(255,255,255,0.6)">${vehicle.year} · ECU: ${vehicle.ecu_type || 'N/A'} · ${vehicle.plate_number || ''}</p></div>
-                </div>` : '<p class="text-muted">No vehicle linked</p>'}
+                </div>` : `<p class="text-muted">${t('no_vehicle_linked', {}, 'No vehicle linked')}</p>`}
               </div>
 
               <!-- ECU Verification Reminder -->
@@ -196,7 +197,7 @@ export function renderRequestDetail({ id }) {
                   <div style="color:var(--brand-orange); flex-shrink:0; margin-top:1px">${icon('alert-triangle', 16)}</div>
                   <div>
                     <p style="margin:0; font-size:12px; color:var(--brand-muted); line-height:1.5">
-                      <strong style="color:var(--brand-orange)">ECU Accuracy Notice:</strong> The ECU reference shown above may <strong style="color:#fff">not match your real hardware ECU</strong>. Always verify using a <strong style="color:#fff">diagnostic scan</strong>, your <strong style="color:#fff">tool's "Get ID" function</strong>, or by <strong style="color:#fff">physically checking the ECU label</strong>. Sending wrong ECU info = incompatible file.
+                      <strong style="color:var(--brand-orange)">${t('ecu_accuracy_notice', {}, 'ECU Accuracy Notice:')}</strong> ${t('ecu_notice_desc', {}, 'The ECU reference shown above may not match your real hardware ECU. Always verify using a diagnostic scan, your tool\'s Get ID function, or by physically checking the ECU label. Sending wrong ECU info = incompatible file.')}
                     </p>
                   </div>
                 </div>
@@ -204,43 +205,43 @@ export function renderRequestDetail({ id }) {
 
               ${isAdmin() ? `
               <div class="card animate-in" style="animation-delay:0.2s">
-                <div class="card-header"><h3>${icon('user-check', 18)} Assignment & Status</h3></div>
+                <div class="card-header"><h3>${icon('user-check', 18)} ${t('assignment_status', {}, 'Assignment & Status')}</h3></div>
                 <div class="form-group">
-                  <label>Assign Technician</label>
+                  <label>${t('assign_technician', {}, 'Assign Technician')}</label>
                   <select id="assign-tech">
-                    <option value="">Unassigned</option>
-                    ${techs.map(t => `<option value="${t.id}" ${request.assigned_to === t.id ? 'selected' : ''}>${t.full_name}</option>`).join('')}
+                    <option value="">${t('unassigned', {}, 'Unassigned')}</option>
+                    ${techs.map(t_prof => `<option value="${t_prof.id}" ${request.assigned_to === t_prof.id ? 'selected' : ''}>${t_prof.full_name}</option>`).join('')}
                   </select>
                 </div>
                 <div class="form-group">
-                  <label>Status</label>
+                  <label>${t('status', {}, 'Status')}</label>
                   <select id="change-status">
                     ${steps.map(s => `<option value="${s}" ${request.status === s ? 'selected' : ''}>${STATUS_LABELS[s]}</option>`).join('')}
-                    <option value="cancelled" ${request.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                    <option value="cancelled" ${request.status === 'cancelled' ? 'selected' : ''}>${t('cancelled')}</option>
                   </select>
                 </div>
                 <div class="form-row">
                   <div class="form-group">
-                    <label>Price (€)</label>
+                    <label>${t('price')}</label>
                     <input type="number" id="req-price" value="${request.price || ''}" placeholder="0"/>
                   </div>
                   <div class="form-group">
-                    <label>Payment</label>
+                    <label>${t('payment', {}, 'Payment')}</label>
                     <select id="req-paid">
-                      <option value="false" ${!request.is_paid ? 'selected' : ''}>Unpaid</option>
-                      <option value="true" ${request.is_paid ? 'selected' : ''}>Paid</option>
+                      <option value="false" ${!request.is_paid ? 'selected' : ''}>${t('unpaid', {}, 'Unpaid')}</option>
+                      <option value="true" ${request.is_paid ? 'selected' : ''}>${t('paid', {}, 'Paid')}</option>
                     </select>
                   </div>
                 </div>
-                <button class="btn btn-primary" id="btn-save-request">${icon('save', 16)} Save Changes</button>
+                <button class="btn btn-primary" id="btn-save-request">${icon('save', 16)} ${t('save_changes')}</button>
               </div>` : ''}
 
               ${isTechnician() ? `
               <div class="card animate-in" style="animation-delay:0.2s">
-                <div class="card-header"><h3>${icon('zap', 18)} Quick Actions</h3></div>
+                <div class="card-header"><h3>${icon('zap', 18)} ${t('quick_actions', {}, 'Quick Actions')}</h3></div>
                 <div class="flex gap-3 flex-wrap">
-                  ${request.status === 'assigned' ? `<button class="btn btn-primary" id="btn-start-work">${icon('play', 16)} Start Working</button>` : ''}
-                  ${request.status === 'in_progress' ? `<button class="btn btn-primary" id="btn-complete">${icon('check-circle', 16)} Mark Complete</button>` : ''}
+                  ${request.status === 'assigned' ? `<button class="btn btn-primary" id="btn-start-work">${icon('play', 16)} ${t('start_working', {}, 'Start Working')}</button>` : ''}
+                  ${request.status === 'in_progress' ? `<button class="btn btn-primary" id="btn-complete">${icon('check-circle', 16)} ${t('mark_complete', {}, 'Mark Complete')}</button>` : ''}
                 </div>
               </div>` : ''}
             </div>
@@ -248,59 +249,77 @@ export function renderRequestDetail({ id }) {
             <div style="display:flex;flex-direction:column;gap:20px">
               <!-- Customer -->
               <div class="card animate-in" style="animation-delay:0.1s">
-                <div class="card-header"><h3>${icon('user', 18)} Customer</h3></div>
+                <div class="card-header"><h3>${icon('user', 18)} ${t('customer')}</h3></div>
                 <div style="display:flex;align-items:center;gap:12px">
-                  ${avatarImg(customer?.full_name || 'Unknown', 40)}
-                  <div><h4 style="color:#fff">${customer?.full_name || 'Unknown'}</h4><p class="text-sm" style="color:rgba(255,255,255,0.6)">${customer?.company_name || ''} · ${customer?.phone || ''}</p></div>
+                  ${avatarImg(customer?.full_name || t('unknown'), 40)}
+                  <div><h4 style="color:#fff">${customer?.full_name || t('unknown')}</h4><p class="text-sm" style="color:rgba(255,255,255,0.6)">${customer?.company_name || ''} · ${customer?.phone || ''}</p></div>
                 </div>
               </div>
 
               <!-- Messages -->
               <div class="card animate-in" style="animation-delay:0.2s;display:flex;flex-direction:column;max-height:380px">
-                <div class="card-header"><h3>${icon('message-circle', 18)} Messages</h3></div>
+                <div class="card-header"><h3>${icon('message-circle', 18)} ${t('messages', {}, 'Messages')}</h3></div>
                 <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-right:6px" id="messages-list">
                   ${messages.length ? messages.map(m => {
                     const sender = getProfileById(m.sender_id);
                     const isMe = m.sender_id === user.id;
                     return `<div style="display:flex;gap:10px;${isMe ? 'flex-direction:row-reverse' : ''}">
-                      ${avatarImg(sender?.full_name || 'Unknown', 30)}
+                      ${avatarImg(sender?.full_name || t('unknown'), 30)}
                       <div style="background:${isMe ? 'linear-gradient(135deg,rgba(196,30,30,0.15),rgba(196,30,30,0.05))' : 'rgba(255,255,255,0.04)'};border:1px solid ${isMe ? 'rgba(196,30,30,0.2)' : 'rgba(255,255,255,0.06)'};padding:10px 14px;border-radius:4px;max-width:80%">
-                        <p class="text-xs font-semibold" style="color:${isMe ? 'var(--brand-red-light)' : 'rgba(255,255,255,0.6)'};margin-bottom:4px">${sender?.full_name || 'Unknown'}</p>
+                        <p class="text-xs font-semibold" style="color:${isMe ? 'var(--brand-red-light)' : 'rgba(255,255,255,0.6)'};margin-bottom:4px">${sender?.full_name || t('unknown')}</p>
                         <p style="font-size:var(--text-sm);color:#fff">${m.content}</p>
                       </div>
                     </div>`;
-                  }).join('') : '<p class="text-muted text-center" style="padding:20px">No messages yet</p>'}
+                  }).join('') : `<p class="text-muted text-center" style="padding:20px">${t('no_messages_yet', {}, 'No messages yet')}</p>`}
                 </div>
                 <div style="display:flex;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06)">
-                  <input type="text" id="msg-input" placeholder="Type a message..."/>
+                  <input type="text" id="msg-input" placeholder="${t('type_message_placeholder', {}, 'Type a message...')}"/>
                   <button class="btn btn-primary" id="btn-send">${icon('send', 16)}</button>
                 </div>
               </div>
 
               <!-- Files -->
               <div class="card animate-in" style="animation-delay:0.25s">
-                <div class="card-header"><h3>${icon('folder', 18)} Files</h3></div>
+                <div class="card-header"><h3>${icon('folder', 18)} ${t('files', {}, 'Files')}</h3></div>
                 <div style="display:flex;flex-direction:column;gap:10px">
                   <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:4px">
-                    <div class="flex items-center gap-3"><span style="color:var(--brand-muted)">${icon('file', 18)}</span><span class="text-sm" style="color:#fff">${request.original_file || 'Original ECU File'}</span></div>
-                    <button class="btn btn-ghost btn-sm">${icon('download', 14)}</button>
+                    <div class="flex items-center gap-3"><span style="color:var(--brand-muted)">${icon('file', 18)}</span><span class="text-sm" style="color:#fff">${request.original_file ? request.original_file.split('/').pop() : t('original_ecu_file', {}, 'Original ECU File')}</span></div>
+                    <a href="${request.original_file || '#'}" download class="btn btn-ghost btn-sm" target="_blank">${icon('download', 14)}</a>
                   </div>
                   ${request.acm_file ? `
                   <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:4px">
-                    <div class="flex items-center gap-3"><span style="color:var(--brand-muted)">${icon('file', 18)}</span><span class="text-sm" style="color:#fff">${request.acm_file}</span></div>
-                    <button class="btn btn-ghost btn-sm">${icon('download', 14)}</button>
+                    <div class="flex items-center gap-3"><span style="color:var(--brand-muted)">${icon('file', 18)}</span><span class="text-sm" style="color:#fff">${request.acm_file.split('/').pop()}</span></div>
+                    <a href="${request.acm_file}" download class="btn btn-ghost btn-sm" target="_blank">${icon('download', 14)}</a>
+                  </div>` : ''}
+                  ${request.log_file ? `
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:4px">
+                    <div class="flex items-center gap-3"><span style="color:var(--brand-muted)">${icon('file-text', 18)}</span><span class="text-sm" style="color:#fff">${request.log_file.split('/').pop()}</span></div>
+                    <a href="${request.log_file}" download class="btn btn-ghost btn-sm" target="_blank">${icon('download', 14)}</a>
+                  </div>` : ''}
+                  ${request.ecu_photo ? `
+                  <div class="ecu-photo-card" style="padding:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:4px;display:flex;flex-direction:column;gap:10px">
+                    <div style="display:flex;align-items:center;justify-content:space-between">
+                      <div class="flex items-center gap-3"><span style="color:var(--brand-muted)">${icon('image', 18)}</span><span class="text-sm" style="color:#fff">${t('ecu_photo_upload') || 'ECU Label Photo'}</span></div>
+                      <a href="${request.ecu_photo}" download class="btn btn-ghost btn-sm" target="_blank">${icon('download', 14)}</a>
+                    </div>
+                    <div style="position:relative; width:100%; height:120px; border-radius:4px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); cursor:pointer" id="btn-preview-ecu-detail">
+                      <img src="${request.ecu_photo}" style="width:100%; height:100%; object-fit:cover" />
+                      <div style="position:absolute; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+                        <span class="text-xs font-semibold" style="color:#fff; display:flex; align-items:center; gap:6px">${icon('eye', 12)} Click to Zoom</span>
+                      </div>
+                    </div>
                   </div>` : ''}
                   ${request.status === 'completed' || request.status === 'delivered' ? `
                   <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(16,185,129,0.02));border:1px solid rgba(16,185,129,0.15);border-radius:4px">
-                    <div class="flex items-center gap-3"><span style="color:var(--status-completed)">${icon('file-check', 18)}</span><span class="text-sm font-semibold" style="color:var(--status-completed)">Modified File (Ready)</span></div>
+                    <div class="flex items-center gap-3"><span style="color:var(--status-completed)">${icon('file-check', 18)}</span><span class="text-sm font-semibold" style="color:var(--status-completed)">${t('modified_file_ready', {}, 'Modified File (Ready)')}</span></div>
                     <button class="btn btn-primary btn-sm">${icon('download', 14)}</button>
                   </div>` : `
                   <div style="padding:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:4px;text-align:center">
-                    <p class="text-sm text-muted">Modified file not yet available</p>
+                    <p class="text-sm text-muted">${t('modified_file_not_available', {}, 'Modified file not yet available')}</p>
                   </div>`}
                   ${isTechnician() || isAdmin() ? `
                   <div id="file-drop-zone" style="border:2px dashed rgba(255,255,255,0.1);border-radius:4px;padding:28px;text-align:center;cursor:pointer;transition:all 0.2s var(--ease)">
-                    <p class="text-sm text-muted">${icon('upload', 16)} Drop modified file here or click to upload</p>
+                    <p class="text-sm text-muted">${icon('upload', 16)} ${t('drop_modified_file', {}, 'Drop modified file here or click to upload')}</p>
                     <input type="file" id="file-upload" style="display:none" accept=".bin,.ori,.mod,.hex"/>
                   </div>` : ''}
                 </div>
@@ -309,7 +328,12 @@ export function renderRequestDetail({ id }) {
           </div>
         </div>
       </main>
-    </div>`;
+    </div>
+    <style>
+      @media(max-width:768px){
+        .detail-grid{grid-template-columns:1fr!important}
+      }
+    </style>`;
 
   initLayoutEvents();
   bindRequestDetailEvents(request, user);
@@ -323,7 +347,7 @@ function bindRequestDetailEvents(request, user) {
     const doSend = async () => {
       if (!msgInput.value.trim()) return;
       await sendMessage(request.id, user.id, msgInput.value.trim());
-      showToast('Message sent', 'success');
+      showToast(t('message_sent', {}, 'Message sent'), 'success');
       msgInput.value = '';
       renderRequestDetail({ id: request.id });
     };
@@ -344,21 +368,21 @@ function bindRequestDetailEvents(request, user) {
     request.is_paid = isPaid;
     request.updated_at = new Date().toISOString();
 
-    showToast('Request updated successfully', 'success');
+    showToast(t('request_updated_success', {}, 'Request updated successfully'), 'success');
     setTimeout(() => renderRequestDetail({ id: request.id }), 500);
   });
 
   // Tech: Start work
   document.getElementById('btn-start-work')?.addEventListener('click', async () => {
     await changeRequestStatus(request.id, 'in_progress', user.id);
-    showToast('Work started!', 'success');
+    showToast(t('work_started', {}, 'Work started!'), 'success');
     setTimeout(() => renderRequestDetail({ id: request.id }), 500);
   });
 
   // Tech: Complete
   document.getElementById('btn-complete')?.addEventListener('click', async () => {
     await changeRequestStatus(request.id, 'completed', user.id);
-    showToast('Request marked as completed!', 'success');
+    showToast(t('request_completed', {}, 'Request completed!'), 'success');
     setTimeout(() => renderRequestDetail({ id: request.id }), 500);
   });
 
@@ -369,7 +393,16 @@ function bindRequestDetailEvents(request, user) {
     dropZone.addEventListener('click', () => fileInput.click());
     dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = 'var(--brand-red)'; dropZone.style.background = 'rgba(196,30,30,0.05)'; });
     dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = 'rgba(255,255,255,0.1)'; dropZone.style.background = 'transparent'; });
-    dropZone.addEventListener('drop', (e) => { e.preventDefault(); showToast(`File "${e.dataTransfer.files[0]?.name}" uploaded`, 'success'); dropZone.style.borderColor = 'var(--status-completed)'; });
-    fileInput.addEventListener('change', () => { if (fileInput.files[0]) showToast(`File "${fileInput.files[0].name}" uploaded`, 'success'); });
+    dropZone.addEventListener('drop', (e) => { e.preventDefault(); showToast(t('file_uploaded_success', { name: e.dataTransfer.files[0]?.name || '' }, `File "${e.dataTransfer.files[0]?.name}" uploaded`), 'success'); dropZone.style.borderColor = 'var(--status-completed)'; });
+    fileInput.addEventListener('change', () => { if (fileInput.files[0]) showToast(t('file_uploaded_success', { name: fileInput.files[0].name || '' }, `File "${fileInput.files[0].name}" uploaded`), 'success'); });
   }
+
+  // ECU Photo preview Zoom click handler
+  document.getElementById('btn-preview-ecu-detail')?.addEventListener('click', () => {
+    showModal('ECU Label Photo Preview', `
+      <div style="text-align:center; padding:10px">
+        <img src="${request.ecu_photo}" style="max-width:100%; max-height:450px; border-radius:6px; box-shadow:0 8px 24px rgba(0,0,0,0.5)" />
+      </div>
+    `, []);
+  });
 }

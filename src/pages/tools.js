@@ -1,5 +1,6 @@
 import { renderSidebar, renderHeader, initLayoutEvents } from '../components/layout.js';
 import { icon } from '../lib/icons.js';
+import { t } from '../lib/i18n.js';
 
 const tools = [
   { name: 'KessV3', brand: 'Alientech', protocols: ['OBD', 'Boot', 'BDM', 'JTAG', 'Tricore', 'Bench'], risk: 'Official' },
@@ -12,7 +13,7 @@ const tools = [
   { name: 'Hexaprog', brand: 'PCMTec/Generic', protocols: ['Boot', 'BDM', 'JTAG', 'Tricore', 'Bench'], risk: 'Official' },
   { name: 'Multiprog', brand: 'Generic', protocols: ['Boot', 'BDM', 'JTAG', 'Tricore', 'Bench'], risk: 'Official' },
   { name: 'PCM Flash', brand: 'PCM Flash', protocols: ['OBD', 'Boot', 'Bench'], risk: 'Official' },
-  { name: 'Foxflash', brand: 'Foxflash', protocols: ['OBD', 'Boot', 'BDM', 'JTAG', 'Tricore', 'Bench'], risk: 'Official + clones exist' },
+  { name: 'Foxflash', brand: 'Foxflash', protocols: ['OBD', 'Boot', 'BDM', 'JTAG', 'Tricore', 'Bench'], risk: 'Clone — results may vary', isClone: true },
   { name: 'KT200 v1/v2', brand: 'KT200', protocols: ['OBD', 'Boot', 'BDM', 'JTAG', 'Tricore', 'Bench'], risk: 'Clone — results may vary', isClone: true },
   { name: 'MPPS v18/v21', brand: 'MPPS', protocols: ['OBD'], risk: 'Clone — high brick risk', isClone: true },
   { name: 'Trasdata', brand: 'Dimsport', protocols: ['Boot', 'BDM', 'JTAG', 'Tricore', 'Bench'], risk: 'Official' },
@@ -32,12 +33,12 @@ export function renderToolsPage() {
         <div class="page-content">
           <div class="page-header animate-in">
             <div style="flex:1">
-              <h1>Supported Tools Database</h1>
-              <p>Reference guide for officially supported reading/writing tools and protocols.</p>
+              <h1>${t('supported_tools_database', {}, 'Supported Tools Database')}</h1>
+              <p>${t('supported_tools_desc', {}, 'Reference guide for officially supported reading/writing tools and protocols.')}</p>
             </div>
             <div class="search-wrap">
               ${icon('search', 16)}
-              <input type="text" id="tool-search" placeholder="Search tools..." class="input" style="padding-left:36px">
+              <input type="text" id="tool-search" placeholder="${t('search_tools_placeholder', {}, 'Search tools...')}" class="input" style="padding-left:36px">
             </div>
           </div>
           
@@ -45,9 +46,9 @@ export function renderToolsPage() {
             <div style="display:flex; gap:12px; align-items:flex-start">
               <div style="color:var(--brand-orange); margin-top:2px">${icon('alert-triangle', 20)}</div>
               <div>
-                <h4 style="margin:0 0 4px 0; color:var(--brand-orange)">Clone Tool Warning</h4>
+                <h4 style="margin:0 0 4px 0; color:var(--brand-orange)">${t('clone_tool_detected', {}, 'Clone Tool Detected')}</h4>
                 <p style="margin:0; font-size:13px; color:var(--brand-muted)">
-                  Tools marked with clone warnings have known clone versions on the market. Clone tools may produce corrupted reads. If you experience issues with file compatibility, consider using an official tool. We will do our best but cannot guarantee results from confirmed clone reads.
+                  ${t('clone_tool_warning_desc', {}, 'Tools marked with clone warnings have known clone versions on the market. Clone tools may produce corrupted reads. If you experience issues with file compatibility, consider using an official tool. We will do our best but cannot guarantee results from confirmed clone reads.')}
                 </p>
               </div>
             </div>
@@ -61,18 +62,18 @@ export function renderToolsPage() {
                     <h3 style="margin:0 0 4px 0">${tool.name}</h3>
                     <div class="text-xs text-muted">${tool.brand}</div>
                   </div>
-                  ${tool.isClone ? `<div class="badge badge-error" style="font-size:11px">${icon('alert-octagon', 12)} Clone</div>` : `<div class="badge badge-assigned" style="font-size:11px">${icon('check-circle', 12)} Official</div>`}
+                  ${tool.isClone ? `<div class="badge badge-error" style="font-size:11px">${icon('alert-octagon', 12)} ${t('clone', {}, 'Clone')}</div>` : `<div class="badge badge-assigned" style="font-size:11px">${icon('check-circle', 12)} ${t('official', {}, 'Official')}</div>`}
                 </div>
                 
                 <div style="margin-bottom:12px">
-                  <div class="text-xs text-muted" style="margin-bottom:4px">Supported Protocols:</div>
+                  <div class="text-xs text-muted" style="margin-bottom:4px">${t('supported_protocols', {}, 'Supported Protocols:')}</div>
                   <div style="display:flex; flex-wrap:wrap; gap:4px">
                     ${tool.protocols.map(p => `<span class="badge" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1)">${p}</span>`).join('')}
                   </div>
                 </div>
                 
                 <div class="text-xs" style="color:${tool.isClone ? 'var(--brand-red)' : 'var(--brand-muted)'}">
-                  <strong>Risk Note:</strong> ${tool.risk}
+                  <strong>${t('risk_note', {}, 'Risk Note:')}</strong> ${t(tool.risk, {}, tool.risk)}
                 </div>
               </div>
             `).join('')}
